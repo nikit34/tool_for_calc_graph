@@ -5,10 +5,21 @@ body {
   background-color: whitesmoke;
 }
 
-#field {
-  background-color: blue;
-  width: 700px;
-  height: 400px;
+.container {
+  padding: 5% 5% 5% 5%;
+  margin: 5% 5% 5% 5%;
+}
+
+.container_col {
+  padding: 0% 2% 0% 2%;
+  margin: 0% 2% 0% 2%;
+  flex: 30%;
+}
+
+.container_row {
+  padding: 2% 0% 2% 0%;
+  margin: 2% 0% 2% 0%;
+  display: flex;
 }
 
 .node {
@@ -24,10 +35,22 @@ body {
   z-index: 100;
 }
 
-.container_col {
-  padding: 1% 0% 1% 0%;
+#buttonGenerateObjects {
+  width: 150px;
 }
 
-.container_row {
-  padding: 0% 5% 0% 5%;
+#field {
+  background-color: white;
+  width: 700px;
+  height: 400px;
+}
+
+#init_date {
+  margin-left: 25%;
+  border-bottom: 2px solid #ccc;
+}
+
+#title {
+  text-align: center;
+  margin: -7.5% 0% 2.5% 0%;
 }

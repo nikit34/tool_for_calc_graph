@@ -33,10 +33,10 @@ class TopSetting extends MainPage {
         button_input.style.backgroundColor = "rgba(0,0,0,0)";
         input_val.style.display = "inline";
       };
-      setTimeout(reset_value, 2000);
+      setTimeout(reset_value, 1000);
     } else {
       button_input.textContent = "push";
-      button_input.style.width = "10%";
+      button_input.style.width = "150px";
       input_val.setAttribute("value", this.count_node);
       input_val.setAttribute("type", "number");
     }
@@ -52,7 +52,7 @@ class BottomPanelTools extends MainPage {
   create_set_nodes(count_node) {
     let was_count_nodes = document.getElementsByClassName("node").length;
     let need_count_nodes = was_count_nodes + parseInt(count_node);
-    var start_tag = document.getElementById("inputGenerateObjects");
+    var start_tag = document.getElementById("init_date");
     var new_div, old_p, new_p, new_br;
 
     if (document.getElementById("auto_p") == null || typeof(document.getElementById("auto_p")) == 'undefined') {
@@ -75,6 +75,7 @@ class BottomPanelTools extends MainPage {
       }
       old_p.after(new_div);
     }
+    document.getElementById("show_total_count_nodes").innerHTML = need_count_nodes;
   }
 }
 BPT = new BottomPanelTools();
