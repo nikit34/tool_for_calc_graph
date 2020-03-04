@@ -1,0 +1,33 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background-color: whitesmoke;
+}
+
+#field {
+  background-color: blue;
+  width: 700px;
+  height: 400px;
+}
+
+.node {
+  background-image: url("img/node.png");
+  width: 20px;
+  height: 20px;
+  float: right;
+  background-size: 100%;
+}
+
+.draggable {
+  cursor: pointer;
+  z-index: 100;
+}
+
+.container_col {
+  padding: 1% 0% 1% 0%;
+}
+
+.container_row {
+  padding: 0% 5% 0% 5%;
+}
