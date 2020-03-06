@@ -47,6 +47,7 @@ body {
 
 #buttonGenerateObjects {
   width: 150px;
+  color: red;
 }
 
 #field {
@@ -57,10 +58,19 @@ body {
 
 #init_date {
   margin-left: 5%;
-  border-bottom: 2px solid #ccc;
+  border-bottom: 2px solid rgb(220, 220, 220);
+  color: rgb(30, 30, 30);
 }
 
 #title {
   text-align: center;
   margin: 0% 0% 1% 0%;
+}
+
+#popup {
+  width: 120px;
+  height: 60px;
+  border-radius: 30%;
+  background-color: yellow;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.5), 0 10px 10px rgba(0,0,0,0.2);
 }

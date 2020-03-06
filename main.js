@@ -129,13 +129,6 @@ class Field extends MainPage {
   one_elem_click_processing(nodes_include) {
     for (let i = 0; i < nodes_include.length; i++) {
       nodes_include[i].setAttribute("class", "node draggable field");
-      document.body.addEventListener("dblclick", function(e) {
-        if (e.target.classList.contains("field")) {
-          e.preventDefault();
-          let one_node = e.target;
-          one_node.setAttribute("class", "node draggable field mark");
-        }
-      });
     }
   }
 
@@ -226,3 +219,53 @@ class Interaction {
 
 I = new Interaction();
 I.event_listens();
+
+
+class PopUp {
+  constructor() {};
+
+  get select_node() {
+    return document.getElementsByClassName('mark')[0];
+  }
+
+  get select_popup() {
+    return document.getElementById('popup');
+  }
+
+  check_call_popup() {
+    document.body.addEventListener("dblclick", function(e) {
+      if (e.target.classList.contains("field")) {
+        e.preventDefault();
+        let one_node = e.target;
+        one_node.setAttribute("class", "node draggable field mark");
+        new PopUp().create_popup();
+      }
+    });
+    document.body.addEventListener("mouseup", function(e) {
+      if (e.target.classList.contains("field")) {
+        e.preventDefault();
+        let one_node = e.target;
+        one_node.setAttribute("class", "node draggable field mark");
+        new PopUp().remove_popup();
+      }
+    });
+  }
+
+  create_popup() {
+    let build_start = this.select_node;
+    let popup = document.createElement("DIV");
+    popup.setAttribute("id", "popup");
+    build_start.after(popup);
+    popup.style.position = build_start.style.position;
+    popup.style.top = (parseFloat(build_start.style.top) - parseFloat(popup.offsetHeight) - 10).toString() + "px";
+    popup.style.left = (parseFloat(build_start.style.left) + parseFloat(build_start.offsetWidth) / 2 - parseFloat(popup.offsetWidth) / 2).toString() + "px";
+  }
+
+  remove_popup() {
+    let popup = this.select_popup;
+    popup.remove();
+  }
+}
+
+PU = new PopUp();
+PU.check_call_popup();
