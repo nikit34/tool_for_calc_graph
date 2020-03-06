@@ -4,13 +4,11 @@
     // Для получения дополнительной информации посетите: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-    
-        {
+         {
+            "name": "Launch index.html",
             "type": "chrome",
             "request": "launch",
-            "name": "Launch Chrome against localhost",
-            "url": "file:///C:/Users/permi/source/repos/draft/1/index.html",
-            "webRoot": "${workspaceFolder}"
-        }
+            "file": "./index.html"
+        },
     ]
 }

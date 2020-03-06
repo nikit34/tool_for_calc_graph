@@ -11,8 +11,8 @@ body {
 }
 
 .container_col {
-  padding: 0% 2% 0% 2%;
-  margin: 0% 2% 0% 2%;
+  padding: 0% 1% 0% 1%;
+  margin: 0% 1% 0% 1%;
   flex: 30%;
 }
 
@@ -24,8 +24,8 @@ body {
 
 .node {
   background-image: url("img/node.png");
-  width: 20px;
-  height: 20px;
+  width: 30px;
+  height: 30px;
   float: right;
   background-size: 100%;
 }
@@ -41,12 +41,12 @@ body {
 
 #field {
   background-color: white;
-  width: 700px;
+  width: 900px;
   height: 400px;
 }
 
 #init_date {
-  margin-left: 25%;
+  margin-left: 5%;
   border-bottom: 2px solid #ccc;
 }
 
