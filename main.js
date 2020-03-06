@@ -79,7 +79,7 @@ class BottomPanelTools extends MainPage {
     }
     for (let i = was_count_nodes; i < need_count_nodes; i++) {
       new_div = document.createElement("DIV");
-      new_div.setAttribute("class", "node draggable");
+      new_div.setAttribute("class", "node");
       if (i != 0 && i % 10 == 0) {
         new_br = document.createElement("BR");
         old_p.after(new_br);
@@ -102,7 +102,10 @@ BPT = new BottomPanelTools();
 class Field extends MainPage {
   constructor() {
     super();
-    this.rect = document.getElementById("field").getBoundingClientRect();
+  }
+
+  get rect_border_field() {
+    return document.getElementById("field").getBoundingClientRect();
   }
 
   get object_inside() {
@@ -111,10 +114,10 @@ class Field extends MainPage {
     for (let i = 0; i < elems.length; i++) {
       let rect_elem = elems[i].getBoundingClientRect();
       if (
-        this.rect.left < rect_elem.left &&
-        this.rect.right > rect_elem.right &&
-        this.rect.top < rect_elem.top &&
-        this.rect.bottom > rect_elem.bottom
+        this.rect_border_field.left < rect_elem.left &&
+        this.rect_border_field.right > rect_elem.right &&
+        this.rect_border_field.top < rect_elem.top &&
+        this.rect_border_field.bottom > rect_elem.bottom
       ) {
         include_elems.push(elems[i]);
       }
@@ -122,24 +125,23 @@ class Field extends MainPage {
     return include_elems;
   }
 
-  change_state_field(){
+  change_state_field() {
     this.view_count_elems_field();
     let nodes_incide = this.object_inside;
-    let one_node = this.one_elem_click_processing(nodes_incide);
-    set_width_node(one_node);
+    this.one_elem_click_processing(nodes_incide);
   }
 
   one_elem_click_processing(nodes_incide) {
     for (let i = 0; i < nodes_incide.length; i++) {
-      nodes_incide[i].addEventListener('dblclick', function (e) {
-        nodes_incide[i].classList.add('mark');
-        return nodes_incide[i];
+      nodes_incide[i].setAttribute("class", "node draggable field");
+      document.body.addEventListener("dblclick", function(e) {
+        if (e.target.classList.contains("field")) {
+          e.preventDefault();
+          let one_node = e.target;
+          one_node.setAttribute("class", "node draggable field mark");
+        }
       });
     }
-  }
-
-  set_width_node(one_node) {
-    console.log(one_node);
   }
 
   view_count_elems_field() {
@@ -159,8 +161,9 @@ let itemMove = false,
   offsetY;
 
 document.body.addEventListener("mousedown", function(e) {
-  if (e.target.classList.contains("draggable")) {
+  if (e.target.classList.contains("node")) {
     e.preventDefault();
+    e.target.setAttribute("class", "node draggable");
     itemMove = true;
     itemElement = e.target;
     const itemRect = itemElement.getBoundingClientRect();
@@ -186,7 +189,15 @@ document.body.addEventListener("mousemove", function(e) {
 
 document.body.addEventListener("mouseup", function(e) {
   if (itemMove) itemMove = false;
-  new Field().change_state_field();
+  F = new Field();
+  if (
+    F.rect_border_field.left < e.x &&
+    F.rect_border_field.right > e.x &&
+    F.rect_border_field.top < e.y &&
+    F.rect_border_field.bottom > e.y
+  ) {
+    F.change_state_field();
+  }
 });
 
 function moveItemToXY(item, x, y, offX, offY) {
