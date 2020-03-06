@@ -6,8 +6,8 @@ body {
 }
 
 .container {
-  padding: 5% 5% 5% 5%;
-  margin: 5% 5% 5% 5%;
+  padding: 1% 1% 1% 1%;
+  margin: 1% 1% 1% 1%;
 }
 
 .container_col {
@@ -17,8 +17,8 @@ body {
 }
 
 .container_row {
-  padding: 2% 0% 2% 0%;
-  margin: 2% 0% 2% 0%;
+  padding: 1% 0% 1% 0%;
+  margin: 1% 0% 1% 0%;
   display: flex;
 }
 
@@ -51,8 +51,8 @@ body {
 
 #field {
   background-color: white;
-  width: 900px;
-  height: 400px;
+  width: 1100px;
+  height: 500px;
 }
 
 #init_date {
@@ -62,5 +62,5 @@ body {
 
 #title {
   text-align: center;
-  margin: -7.5% 0% 2.5% 0%;
+  margin: 0% 0% 1% 0%;
 }

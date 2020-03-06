@@ -15,11 +15,6 @@ class MainPage {
     F = new Field();
     return F.object_inside.length;
   }
-
-  set_nodes(count_node) {
-    BPT = new BottomPanelTools();
-    BPT.create_set_nodes(count_node);
-  }
 }
 
 class TopSetting extends MainPage {
@@ -127,13 +122,13 @@ class Field extends MainPage {
 
   change_state_field() {
     this.view_count_elems_field();
-    let nodes_incide = this.object_inside;
-    this.one_elem_click_processing(nodes_incide);
+    let nodes_include = this.object_inside;
+    this.one_elem_click_processing(nodes_include);
   }
 
-  one_elem_click_processing(nodes_incide) {
-    for (let i = 0; i < nodes_incide.length; i++) {
-      nodes_incide[i].setAttribute("class", "node draggable field");
+  one_elem_click_processing(nodes_include) {
+    for (let i = 0; i < nodes_include.length; i++) {
+      nodes_include[i].setAttribute("class", "node draggable field");
       document.body.addEventListener("dblclick", function(e) {
         if (e.target.classList.contains("field")) {
           e.preventDefault();
@@ -155,69 +150,79 @@ class Field extends MainPage {
 
 F = new Field();
 
-let itemMove = false,
-  itemElement = null,
-  offsetX,
-  offsetY;
 
-document.body.addEventListener("mousedown", function(e) {
-  if (e.target.classList.contains("node")) {
-    e.preventDefault();
-    e.target.setAttribute("class", "node draggable");
-    itemMove = true;
-    itemElement = e.target;
-    const itemRect = itemElement.getBoundingClientRect();
-    itemElement.style.position = "absolute";
-    offsetX = e.clientX - itemRect.x;
-    offsetY = e.clientY - itemRect.y;
-    moveItemToXY(itemElement, e.x, e.y, offsetX, offsetY);
-    itemElement.ondragstart = function(e) {
+class Interaction {
+  constructor() {
+    this.itemMove = false;
+    this.itemElement = null;
+    this.offsetX;
+    this.offsetY;
+  }
+
+  event_listens() {
+    document.body.addEventListener("mousedown", function(e) {
+      if (e.target.classList.contains("node")) {
+        e.preventDefault();
+        e.target.setAttribute("class", "node draggable");
+        this.itemMove = true;
+        this.itemElement = e.target;
+        const itemRect = this.itemElement.getBoundingClientRect();
+        this.itemElement.style.position = "absolute";
+        this.offsetX = e.clientX - itemRect.x;
+        this.offsetY = e.clientY - itemRect.y;
+        new Interaction().moveItemToXY(this.itemElement, e.x, e.y, this.offsetX, this.offsetY);
+        this.itemElement.ondragstart = function(e) {
+          return false;
+        };
+      }
+    });
+
+    document.body.addEventListener("mousemove", function(e) {
+      if (!this.itemMove) return false;
+      if (e.buttons != 1) {
+        this.itemMove = false;
+        return;
+      }
+      new Interaction().moveItemToXY(this.itemElement, e.x, e.y, this.offsetX, this.offsetY);
       return false;
-    };
-  }
-});
+    });
 
-document.body.addEventListener("mousemove", function(e) {
-  if (!itemMove) return false;
-  if (e.buttons != 1) {
-    itemMove = false;
-    return;
+    document.body.addEventListener("mouseup", function(e) {
+      if (this.itemMove) this.itemMove = false;
+      F = new Field();
+      if (
+        F.rect_border_field.left < e.x &&
+        F.rect_border_field.right > e.x &&
+        F.rect_border_field.top < e.y &&
+        F.rect_border_field.bottom > e.y
+      ) {
+        F.change_state_field();
+      }
+    });
   }
-  moveItemToXY(itemElement, e.x, e.y, offsetX, offsetY);
-  return false;
-});
 
-document.body.addEventListener("mouseup", function(e) {
-  if (itemMove) itemMove = false;
-  F = new Field();
-  if (
-    F.rect_border_field.left < e.x &&
-    F.rect_border_field.right > e.x &&
-    F.rect_border_field.top < e.y &&
-    F.rect_border_field.bottom > e.y
-  ) {
-    F.change_state_field();
+  moveItemToXY(item, x, y, offX, offY) {
+    let itemRect = item.getBoundingClientRect();
+    const minX = 0,
+      minY = 0,
+      maxY = document.documentElement.clientHeight - item.offsetHeight,
+      maxX = document.documentElement.clientWidth - item.offsetWidth;
+    let itemX = x - offX,
+      itemY = y - offY;
+    if (itemX < minX) itemX = minX;
+    if (itemY < minY) {
+      window.scrollBy(0, itemY - minY);
+      itemY = minY;
+    }
+    if (itemX > maxX) itemX = maxX;
+    if (itemY > maxY) {
+      window.scrollBy(0, itemY - maxY);
+      itemY = maxY;
+    }
+    item.style.left = itemX + pageXOffset + "px";
+    item.style.top = itemY + pageYOffset + "px";
   }
-});
-
-function moveItemToXY(item, x, y, offX, offY) {
-  let itemRect = item.getBoundingClientRect();
-  const minX = 0,
-    minY = 0,
-    maxY = document.documentElement.clientHeight - item.offsetHeight,
-    maxX = document.documentElement.clientWidth - item.offsetWidth;
-  let itemX = x - offX,
-    itemY = y - offY;
-  if (itemX < minX) itemX = minX;
-  if (itemY < minY) {
-    window.scrollBy(0, itemY - minY);
-    itemY = minY;
-  }
-  if (itemX > maxX) itemX = maxX;
-  if (itemY > maxY) {
-    window.scrollBy(0, itemY - maxY);
-    itemY = maxY;
-  }
-  item.style.left = itemX + pageXOffset + "px";
-  item.style.top = itemY + pageYOffset + "px";
 }
+
+I = new Interaction();
+I.event_listens();
