@@ -67,10 +67,18 @@ body {
   margin: 0% 0% 1% 0%;
 }
 
-#popup {
+#popup_body {
   width: 120px;
-  height: 60px;
-  border-radius: 30%;
-  background-color: yellow;
+  height: 40px;
+  border-radius: 5%;
+  background-color: rgba(255, 255, 0, 0.5);
   box-shadow: 0 15px 30px rgba(0,0,0,0.5), 0 10px 10px rgba(0,0,0,0.2);
+}
+
+#popup_input {
+  width: 50px;
+}
+
+#popup_button {
+  width: 50px;
 }
