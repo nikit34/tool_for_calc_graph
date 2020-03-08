@@ -39,15 +39,22 @@ body {
 
 .field {
   border: 3px solid rgba(150, 150, 255, 0.5);
+  color: white;
+  text-align: center;
+  line-height: 30px;
 }
 
 .mark {
   border: 5px solid rgba(255, 150, 150, 0.5);
 }
 
+.save {
+  border: 8px solid rgba(150, 255, 150, 0.5);
+}
+
 #buttonGenerateObjects {
   width: 150px;
-  color: red;
+  font-weight: 600;
 }
 
 #field {
@@ -70,6 +77,10 @@ body {
 #popup_body {
   width: 120px;
   height: 40px;
+  text-align: center;
+  font-weight: 600;
+  color: black;
+  line-height: 30px;
   border-radius: 5%;
   background-color: rgba(255, 255, 0, 0.5);
   box-shadow: 0 15px 30px rgba(0,0,0,0.5), 0 10px 10px rgba(0,0,0,0.2);
@@ -77,8 +88,10 @@ body {
 
 #popup_input {
   width: 50px;
+  height: 17px;
 }
 
 #popup_button {
-  width: 50px;
+  width: 42px;
+  height: 23px;
 }
