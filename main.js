@@ -16,10 +16,6 @@ class MainPage {
     return F.object_inside.length;
   }
 
-  get select_node() {
-    return document.getElementsByClassName('mark')[0];
-  }
-
   getRandomInt(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
@@ -40,7 +36,7 @@ class TopSetting extends MainPage {
       button_input.textContent == "push" ||
       button_input.textContent == "append"
     ) {
-      button_input.style.backgroundColor = "rgba(0,0,0,.7)";
+      button_input.style.backgroundColor = "rgba(0,0,0,.5)";
       input_val.style.display = "none";
       button_input.textContent = "append";
       BPT = new BottomPanelTools();
@@ -50,7 +46,7 @@ class TopSetting extends MainPage {
         button_input.style.backgroundColor = "rgba(0,0,0,0)";
         input_val.style.display = "inline";
       };
-      setTimeout(reset_value, 1000);
+      setTimeout(reset_value, 500);
     } else {
       button_input.textContent = "push";
       button_input.style.width = "150px";
@@ -237,74 +233,63 @@ class PopUp extends MainPage{
   };
 
   select_popup_body() {
-    return document.getElementById('popup_body');
+    return document.getElementById("popup_body");
   }
 
   select_popup_input() {
-    return document.getElementById('popup_input');
+    return document.getElementById("popup_input");
   }
 
   select_popup_button() {
-    return document.getElementById('popup_button');
+    return document.getElementById("popup_button");
   }
 
-  processing_popup() {
-    document.body.addEventListener("dblclick", function(e) {
-      PU.double_click_proc(e);
-    });
-    document.body.addEventListener("mouseup", function(e) {
-      PU.mouse_up_proc(e);
-    });
-  }
-
-  double_click_proc(e) {
-    // create popup if (ELEM at field) and (BODY) popups NOT EXIST
-    if (e.target.classList.contains("field") && PU.select_popup_body() == null) {
-      e.preventDefault();
-      let one_node = e.target;
-      one_node.setAttribute("class", "node draggable field mark");
-      PU.create_popup();
-    // else if (BODY) and (INPUT) popups EXIST
-    } else if (PU.select_popup_body() && PU.select_popup_input()) {
-      // save data and remove popup if MOUSE FOCUSES on (BUTTON) and (VALUE) EXIST
-      if ((e.target.id == "popup_button") && PU.select_popup_input().value) {
-        let value = PU.select_popup_input().value;
-        PU.save_data(value);
-        PU.remove_popup(false);
-        PU.display_popup(value);
-        PU.change_state_node();
-      // change color if MOUSE FOCUSES on ((BUTTON or BODY) and (VALUE)) NOT EXIST
-      } else if ((e.target.id == "popup_body" || e.target.id == "popup_button") && !(PU.select_popup_input().value)){
-        PU.select_popup_body().style.backgroundColor = "rgba(255,50,50,0.5)";
-      } else {
-      // remove popup completely
-        PU.remove_popup(true);
+  // TODO: do view all display popup for tap special button - not static method - will call other class MainPage <- Top Setting class
+  display_popup(value) {
+    let popup_body = this.select_popup_body();
+    popup_body.style.width = "60px";
+    popup_body.style.height = "30px";
+    popup_body.style.top = (parseFloat(popup_body.style.top) + 10.0).toString() + "px";
+    popup_body.style.left = (parseFloat(popup_body.style.left) + 30.0).toString() + "px";
+    popup_body.style.backgroundColor = "rgba(150, 255, 150, 0.5)";
+    for(let key of Object.keys(localStorage)) {
+      if (localStorage.getItem(key).toString() == value.toString()){
+        popup_body.textContent = "key: " + key;
       }
-    // else if only (BODY) popups EXIST
-    } else if (PU.select_popup_body() && !PU.select_popup_input()) {
-      // if MOUSE FOCUSES on (BODY)
-      if (e.target.id == "popup_body"){
-        e.target.parentElement.setAttribute("class", "node draggable field mark");
-        PU.remove_popup(true);
-        PU.create_popup();
-      // if MOUSE NOT FOCUSES on (BODY)
+    }
+    popup_body.parentElement.textContent = value.toString();
+  }
+
+  // TODO: do hidden all display popup for tap special button - not static method - will call other class MainPage <- Top Setting class
+  remove_popup(full) {
+    if (this.select_popup_body()) {
+      if (full) {
+        if (!this.select_popup_body().parentElement.classList.contains("save")){
+          this.select_popup_body().parentElement.setAttribute("class", "node draggable field");
+        }
+        this.select_popup_body().remove();
       } else {
-        PU.remove_popup(true);
+        this.select_popup_input().remove();
+        this.select_popup_button().remove();
+        if (!this.select_popup_body().parentElement.classList.contains("save")){
+          this.select_popup_body().parentElement.setAttribute("class", "node draggable field mark");
+        }
       }
     }
   }
 
-  mouse_up_proc(e) {
-    if (e.target.classList.contains("field")) {
-      e.preventDefault();
-      let one_node = e.target;
-      one_node.textContent = "W";
-      one_node.setAttribute("class", "node draggable field");
+  save_data(value) {
+    this.random_num = [];
+    let random_value = this.getRandomInt(0, 100);
+    while (this.random_num.includes(random_value)) {
+      random_value = this.getRandomInt(0, 100);
     }
+    this.random_num[this.random_num.length] = random_value;
+    localStorage.setItem(this.random_num[this.random_num.length - 1].toString(), value.toString());
   }
 
-  create_popup() {
-    let build_start = PU.select_node();
+  create_popup(e) {
+    let build_start = e.target;
     let popup_body = document.createElement("DIV");
     popup_body.setAttribute("id", "popup_body");
     build_start.appendChild(popup_body);
@@ -317,6 +302,7 @@ class PopUp extends MainPage{
     popup_input.style.position = "absolute";
     popup_input.style.top = "10px";
     popup_input.style.left = "10px";
+    popup_input.focus();
     let popup_button = document.createElement("BUTTON");
     popup_button.setAttribute("id", "popup_button");
     popup_body.appendChild(popup_button);
@@ -324,45 +310,58 @@ class PopUp extends MainPage{
     popup_button.style.position = "absolute";
     popup_button.style.top = "10px";
     popup_button.style.left = "70px";
+    this.select_popup_body().parentElement.setAttribute("class", "node draggable field mark");
   }
 
-  display_popup(value) {
-    let popup_body = PU.select_popup_body();
-    popup_body.style.width = "60px";
-    popup_body.style.height = "30px";
-    popup_body.style.top = (parseFloat(popup_body.style.top) + 10.0).toString() + "px";
-    popup_body.style.left = (parseFloat(popup_body.style.left) + 30.0).toString() + "px";
-    for(let key of Object.keys(localStorage)) {
-      if (localStorage.getItem(key).toString() == value.toString()){
-        popup_body.textContent = "key: " + key;
+  double_click_proc(e) {
+    e.preventDefault();
+    if (e.target.classList.contains("field") && !(e.target.classList.contains("mark")) && (this.select_popup_body() == null)) {
+      this.create_popup(e);
+    } else if (e.target.id == "popup_body" && !(this.select_popup_input() && this.select_popup_button())) {
+      this.remove_popup(true);
+      this.create_popup(e);
+    } else if ((e.target.id == "field" || e.target.classList.contains("field")) && this.select_popup_body()) {
+      this.remove_popup(true);
+    }
+  }
+
+  one_click_proc(e) {
+    e.preventDefault();
+    // save data and remove popup if MOUSE FOCUSES on (BUTTON) and (VALUE) EXIST
+    if ((e.target.id == "popup_button") && this.select_popup_input().value) {
+      let value = this.select_popup_input().value;
+      this.save_data(value);
+      this.select_popup_body().parentElement.setAttribute("class", "node draggable field mark save");
+      this.remove_popup(false);
+      this.display_popup(value);
+    }
+    // change color if MOUSE FOCUSES on ((BUTTON or BODY) and (VALUE)) NOT EXIST
+    else if ((e.target.id == "popup_body" || e.target.id == "popup_button") && !(this.select_popup_input().value)) {
+      this.select_popup_body().style.backgroundColor = "rgba(255, 150, 150, 0.5)";
+      if (!this.select_popup_body().parentElement.classList.contains("save")){
+        this.select_popup_body().parentElement.setAttribute("class", "node draggable field mark");
+      }
+    } else if (e.target.id == "popup_input") {
+      this.select_popup_body().style.backgroundColor = "rgba(150, 150, 255, 0.5)";
+      if (!this.select_popup_body().parentElement.classList.contains("save")){
+        this.select_popup_body().parentElement.setAttribute("class", "node draggable field mark");
+      }
+    } else if (this.select_popup_body()) {
+      if (!this.select_popup_body().parentElement.classList.contains("save")){
+        this.select_popup_body().parentElement.setAttribute("class", "node draggable field mark");
       }
     }
-    // popup_body.parentElement.textContent = value.toString();
   }
 
-  remove_popup(without_width) {
-    if (without_width) {
-       PU.select_popup_body().remove();
-    } else {
-      PU.select_popup_input().remove();
-      PU.select_popup_button().remove();
-    }
-  }
-
-  save_data(value) {
-    this.random_num = [];
-    let random_value = this.getRandomInt(0, 100);
-    while (this.random_num.includes(random_value)) {
-      random_value = this.getRandomInt(0, 100);
-    }
-    this.random_num[this.random_num.length] = random_value
-    localStorage.setItem(this.random_num[this.random_num.length - 1].toString(), value.toString());
-  }
-
-  change_state_node() {
-    PU.select_node().setAttribute("class", "node draggable field mark save");
+  processing_popup() {
+    document.body.addEventListener("click", function(e) {
+      PU.one_click_proc(e);
+    });
+    document.body.addEventListener("dblclick", function(e) {
+      PU.double_click_proc(e);
+    });
   }
 }
 
-PU = new PopUp();
+var PU = new PopUp();
 PU.processing_popup();
