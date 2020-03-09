@@ -134,7 +134,11 @@ class Field extends MainPage {
 
   one_elem_click_processing(nodes_include) {
     for (let i = 0; i < nodes_include.length; i++) {
-      nodes_include[i].setAttribute("class", "node draggable field");
+      if (nodes_include[i].textContent == "") {
+        nodes_include[i].setAttribute("class", "node draggable field");
+      } else {
+        nodes_include[i].setAttribute("class", "node draggable field mark save");
+      }
     }
   }
 
@@ -188,7 +192,6 @@ class Interaction {
 
     document.body.addEventListener("mouseup", function(e) {
       if (this.itemMove) this.itemMove = false;
-      F = new Field();
       if (
         F.rect_border_field.left < e.x &&
         F.rect_border_field.right > e.x &&
@@ -249,8 +252,7 @@ class PopUp extends MainPage{
   }
 
   // TODO: do view all display popup for tap special button - not static method - will call other class MainPage <- Top Setting class
-  create_display_popup(value) {
-    let node = this.select_popup_body().parentElement;
+  create_display_popup(node, value) {
     node.textContent = value.toString();
     let display_popup = document.createElement("DIV");
     display_popup.setAttribute("id", "display_popup");
@@ -271,16 +273,23 @@ class PopUp extends MainPage{
   }
 
   // TODO: do hidden all display popup for tap special button - not static method - will call other class MainPage <- Top Setting class
-  remove_popup() {
-    if (this.select_popup_body()) {
-      this.select_popup_body().parentElement.setAttribute("class", "node draggable field");
-      this.select_popup_body().remove();
+  remove_popup(display) {
+    if (display) {
+      if (this.select_display_body()) {
+        this.select_display_body().parentElement.setAttribute("class", "node draggable field mark save");
+        this.select_display_body().remove();
+      }
+    } else {
+      if (this.select_popup_body()) {
+        this.select_popup_body().parentElement.setAttribute("class", "node draggable field");
+        this.select_popup_body().remove();
+      }
     }
   }
 
   save_data(value) {
     this.random_num = [];
-    let random_value = this.getRandomInt(0, 100);
+    var random_value = this.getRandomInt(0, 100);
     while (this.random_num.includes(random_value)) {
       random_value = this.getRandomInt(0, 100);
     }
@@ -315,39 +324,40 @@ class PopUp extends MainPage{
 
   double_click_proc(e) {
     e.preventDefault();
-    if (e.target.classList.contains("field") && !(e.target.classList.contains("mark")) && (this.select_popup_body() == null)) {
-      this.create_popup(e);
-    } else if (e.target.id == "popup_body" && !(this.select_popup_input() && this.select_popup_button())) {
-      this.remove_popup();
-      this.create_popup(e);
-    } else if ((e.target.id == "field" || e.target.classList.contains("field")) && this.select_popup_body()) {
-      this.remove_popup();
+    if (this.select_popup_body() || !e.target.classList.contains("save")) {
+      if (e.target.classList.contains("field") && !(e.target.classList.contains("mark")) && (this.select_popup_body() == null)) {
+        this.remove_popup(true);
+        this.create_popup(e);
+      } else if (e.target.id == "popup_body" && !(this.select_popup_input() && this.select_popup_button())) {
+        this.remove_popup(false);
+        this.create_popup(e);
+      } else if ((e.target.id == "field" || e.target.classList.contains("field")) && this.select_popup_body()) {
+        this.remove_popup(false);
+      }
+    } else if (this.select_display_body() || e.target.classList.contains("save")) {
+      if (e.target.classList.contains("save") && (this.select_display_body() == null)) {
+        this.create_display_popup(e.target, e.target.value);
+      }
     }
   }
 
   one_click_proc(e) {
     e.preventDefault();
-    // save data and remove popup if MOUSE FOCUSES on (BUTTON) and (VALUE) EXIST
     if ((e.target.id == "popup_button") && this.select_popup_input().value) {
       let value = this.select_popup_input().value;
+      let node = this.select_popup_body().parentElement;
       this.save_data(value);
-      this.create_display_popup(value);
-    }
-    // change color if MOUSE FOCUSES on ((BUTTON or BODY) and (VALUE)) NOT EXIST
-    else if ((e.target.id == "popup_body" || e.target.id == "popup_button") && !(this.select_popup_input().value)) {
+      this.create_display_popup(node, value);
+    } else if ((e.target.id == "popup_body" || e.target.id == "popup_button") && !(this.select_popup_input().value)) {
       this.select_popup_body().style.backgroundColor = "rgba(255, 150, 150, 0.5)";
-      if (!this.select_popup_body().parentElement.classList.contains("save")){
-        this.select_popup_body().parentElement.setAttribute("class", "node draggable field mark");
-      }
     } else if (e.target.id == "popup_input") {
       this.select_popup_body().style.backgroundColor = "rgba(150, 150, 255, 0.5)";
-      if (!this.select_popup_body().parentElement.classList.contains("save")){
-        this.select_popup_body().parentElement.setAttribute("class", "node draggable field mark");
-      }
-    } else if (this.select_popup_body()) {
-      if (!this.select_popup_body().parentElement.classList.contains("save")){
-        this.select_popup_body().parentElement.setAttribute("class", "node draggable field mark");
-      }
+    } else if ((e.target.id == "display_popup")) {
+      let node = this.select_display_body().parentElement;
+      this.remove_popup(true);
+      node.setAttribute("class", "node draggable field mark save");
+    } else if ((e.target.textContent != "") && (e.target.classList.contains("save")) && (this.select_display_body() == null) && (this.select_popup_body() == null)) {
+      this.create_display_popup(e.target, e.target.textContent);
     }
   }
 
