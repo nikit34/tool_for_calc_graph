@@ -15,12 +15,6 @@ class MainPage {
     F = new Field();
     return F.object_inside.length;
   }
-
-  getRandomInt(min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min)) + min;
-  }
 }
 
 class TopSetting extends MainPage {
@@ -230,7 +224,34 @@ I = new Interaction();
 I.event_listens();
 
 
-class PopUp extends MainPage{
+class Data {
+  constructor(){}
+
+  getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min)) + min;
+  }
+
+  delete_data(node) {
+    node.textContent = "";
+    localStorage.removeItem(node.getAttribute("data-id"));
+    node.removeAttribute("data-id");
+  }
+
+  save_data(node, value) {
+    this.random_num = [];
+    var random_value = this.getRandomInt(0, 100);
+    while (this.random_num.includes(random_value)) {
+      random_value = this.getRandomInt(0, 100);
+    }
+    this.random_num[this.random_num.length] = random_value;
+    node.setAttribute("data-id", this.random_num[this.random_num.length - 1].toString());
+    localStorage.setItem(this.random_num[this.random_num.length - 1].toString(), value.toString());
+  }
+}
+
+class PopUp extends Data{
   constructor() {
     super();
   };
@@ -294,23 +315,6 @@ class PopUp extends MainPage{
         this.select_popup_body().remove();
       }
     }
-  }
-
-  delete_data(node) {
-    node.textContent = "";
-    localStorage.removeItem(node.getAttribute("data-id"));
-    node.removeAttribute("data-id");
-  }
-
-  save_data(node, value) {
-    this.random_num = [];
-    var random_value = this.getRandomInt(0, 100);
-    while (this.random_num.includes(random_value)) {
-      random_value = this.getRandomInt(0, 100);
-    }
-    this.random_num[this.random_num.length] = random_value;
-    node.setAttribute("data-id", this.random_num[this.random_num.length - 1].toString());
-    localStorage.setItem(this.random_num[this.random_num.length - 1].toString(), value.toString());
   }
 
   create_popup(e) {
@@ -382,3 +386,10 @@ class PopUp extends MainPage{
 
 var PU = new PopUp();
 PU.processing_popup();
+
+class B_curves extends Data {
+  constructor() {}
+
+
+}
+
