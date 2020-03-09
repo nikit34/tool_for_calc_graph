@@ -232,6 +232,10 @@ class PopUp extends MainPage{
     super();
   };
 
+  select_display_body() {
+    return document.getElementById("display_popup");
+  }
+
   select_popup_body() {
     return document.getElementById("popup_body");
   }
@@ -245,36 +249,32 @@ class PopUp extends MainPage{
   }
 
   // TODO: do view all display popup for tap special button - not static method - will call other class MainPage <- Top Setting class
-  display_popup(value) {
-    let popup_body = this.select_popup_body();
-    popup_body.style.width = "60px";
-    popup_body.style.height = "30px";
-    popup_body.style.top = (parseFloat(popup_body.style.top) + 10.0).toString() + "px";
-    popup_body.style.left = (parseFloat(popup_body.style.left) + 30.0).toString() + "px";
-    popup_body.style.backgroundColor = "rgba(150, 255, 150, 0.5)";
+  create_display_popup(value) {
+    let node = this.select_popup_body().parentElement;
+    node.textContent = value.toString();
+    let display_popup = document.createElement("DIV");
+    display_popup.setAttribute("id", "display_popup");
+    node.appendChild(display_popup);
+    display_popup.style.position = "absolute";
+    display_popup.style.width = "60px";
+    display_popup.style.height = "30px";
+    display_popup.style.top = (-parseFloat(node.offsetHeight) - parseFloat(display_popup.offsetHeight) / 2).toString()  + "px";
+    display_popup.style.left = (-parseFloat(display_popup.offsetWidth) / 2 + parseFloat(node.offsetWidth) / 2).toString()  + "px";
+    display_popup.style.backgroundColor = "rgba(150, 255, 150, 0.5)";
     for(let key of Object.keys(localStorage)) {
       if (localStorage.getItem(key).toString() == value.toString()){
-        popup_body.textContent = "key: " + key;
+        display_popup.textContent = "key: " + key;
+        break;
       }
     }
-    popup_body.parentElement.textContent = value.toString();
+    this.select_display_body().parentElement.setAttribute("class", "node draggable field mark save");
   }
 
   // TODO: do hidden all display popup for tap special button - not static method - will call other class MainPage <- Top Setting class
-  remove_popup(full) {
+  remove_popup() {
     if (this.select_popup_body()) {
-      if (full) {
-        if (!this.select_popup_body().parentElement.classList.contains("save")){
-          this.select_popup_body().parentElement.setAttribute("class", "node draggable field");
-        }
-        this.select_popup_body().remove();
-      } else {
-        this.select_popup_input().remove();
-        this.select_popup_button().remove();
-        if (!this.select_popup_body().parentElement.classList.contains("save")){
-          this.select_popup_body().parentElement.setAttribute("class", "node draggable field mark");
-        }
-      }
+      this.select_popup_body().parentElement.setAttribute("class", "node draggable field");
+      this.select_popup_body().remove();
     }
   }
 
@@ -318,10 +318,10 @@ class PopUp extends MainPage{
     if (e.target.classList.contains("field") && !(e.target.classList.contains("mark")) && (this.select_popup_body() == null)) {
       this.create_popup(e);
     } else if (e.target.id == "popup_body" && !(this.select_popup_input() && this.select_popup_button())) {
-      this.remove_popup(true);
+      this.remove_popup();
       this.create_popup(e);
     } else if ((e.target.id == "field" || e.target.classList.contains("field")) && this.select_popup_body()) {
-      this.remove_popup(true);
+      this.remove_popup();
     }
   }
 
@@ -331,9 +331,7 @@ class PopUp extends MainPage{
     if ((e.target.id == "popup_button") && this.select_popup_input().value) {
       let value = this.select_popup_input().value;
       this.save_data(value);
-      this.select_popup_body().parentElement.setAttribute("class", "node draggable field mark save");
-      this.remove_popup(false);
-      this.display_popup(value);
+      this.create_display_popup(value);
     }
     // change color if MOUSE FOCUSES on ((BUTTON or BODY) and (VALUE)) NOT EXIST
     else if ((e.target.id == "popup_body" || e.target.id == "popup_button") && !(this.select_popup_input().value)) {
