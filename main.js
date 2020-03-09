@@ -264,7 +264,7 @@ class PopUp extends MainPage{
     display_popup.style.left = (-parseFloat(display_popup.offsetWidth) / 2 + parseFloat(node.offsetWidth) / 2).toString()  + "px";
     display_popup.style.backgroundColor = "rgba(150, 255, 150, 0.5)";
     for(let key of Object.keys(localStorage)) {
-      if (localStorage.getItem(key).toString() == value.toString()){
+      if (key.toString() == node.dataset.id.toString()){
         display_popup.textContent = "key: " + key;
         break;
       }
@@ -287,13 +287,14 @@ class PopUp extends MainPage{
     }
   }
 
-  save_data(value) {
+  save_data(node, value) {
     this.random_num = [];
     var random_value = this.getRandomInt(0, 100);
     while (this.random_num.includes(random_value)) {
       random_value = this.getRandomInt(0, 100);
     }
     this.random_num[this.random_num.length] = random_value;
+    node.setAttribute("data-id", this.random_num[this.random_num.length - 1].toString());
     localStorage.setItem(this.random_num[this.random_num.length - 1].toString(), value.toString());
   }
 
@@ -346,7 +347,7 @@ class PopUp extends MainPage{
     if ((e.target.id == "popup_button") && this.select_popup_input().value) {
       let value = this.select_popup_input().value;
       let node = this.select_popup_body().parentElement;
-      this.save_data(value);
+      this.save_data(node, value);
       this.create_display_popup(node, value);
     } else if ((e.target.id == "popup_body" || e.target.id == "popup_button") && !(this.select_popup_input().value)) {
       this.select_popup_body().style.backgroundColor = "rgba(255, 150, 150, 0.5)";
