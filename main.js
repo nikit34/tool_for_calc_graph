@@ -12,8 +12,7 @@ class MainPage {
   }
 
   get get_now_count_node() {
-    F = new Field();
-    return F.object_inside.length;
+    return new Field().object_inside.length;
   }
 }
 
@@ -33,8 +32,7 @@ class TopSetting extends MainPage {
       button_input.style.backgroundColor = "rgba(0,0,0,.5)";
       input_val.style.display = "none";
       button_input.textContent = "append";
-      BPT = new BottomPanelTools();
-      BPT.create_set_nodes(parseInt(this.get_count_node));
+      new BottomPanelTools().create_set_nodes(parseInt(this.get_count_node));
       let reset_value = function() {
         button_input.textContent = "push";
         button_input.style.backgroundColor = "rgba(0,0,0,0)";
@@ -49,7 +47,7 @@ class TopSetting extends MainPage {
     }
   }
 }
-TS = new TopSetting(10);
+var TS = new TopSetting(10);
 
 class BottomPanelTools extends MainPage {
   constructor() {
@@ -92,7 +90,7 @@ class BottomPanelTools extends MainPage {
       this.get_was_count_node - this.get_now_count_node;
   }
 }
-BPT = new BottomPanelTools();
+
 
 class Field extends MainPage {
   constructor() {
@@ -148,9 +146,9 @@ class Field extends MainPage {
   }
 }
 
-F = new Field();
+var F = new Field();
 
-class Interaction {
+class SetNodes {
   constructor() {
     this.itemMove = false;
     this.itemElement = null;
@@ -169,7 +167,7 @@ class Interaction {
         this.itemElement.style.position = "absolute";
         this.offsetX = e.clientX - itemRect.x;
         this.offsetY = e.clientY - itemRect.y;
-        new Interaction().moveItemToXY(
+        new SetNodes().moveItemToXY(
           this.itemElement,
           e.x,
           e.y,
@@ -188,7 +186,7 @@ class Interaction {
         this.itemMove = false;
         return;
       }
-      new Interaction().moveItemToXY(
+      new SetNodes().moveItemToXY(
         this.itemElement,
         e.x,
         e.y,
@@ -213,7 +211,7 @@ class Interaction {
 
   moveItemToXY(item, x, y, offX, offY) {
     let itemRect = item.getBoundingClientRect();
-    const minX = 0,
+    let minX = 0,
       minY = 0,
       maxY = document.documentElement.clientHeight - item.offsetHeight,
       maxX = document.documentElement.clientWidth - item.offsetWidth;
@@ -234,8 +232,8 @@ class Interaction {
   }
 }
 
-I = new Interaction();
-I.event_listens();
+SN = new SetNodes();
+SN.event_listens();
 
 class Data {
   constructor() {}
@@ -478,6 +476,7 @@ class PopUp extends Data {
 var PU = new PopUp();
 PU.processing_popup();
 
+
 class DrawLine extends Data {
   constructor() {
     super();
@@ -547,3 +546,12 @@ class DrawLine extends Data {
 
 var DL = new DrawLine();
 DL.draw_line();
+
+
+// class ConcatLineNodes extends DrawLine, SetNodes {
+//   constructor() {
+//     super();
+//   }
+// }
+
+// var CLN = new ConcatLineNodes();
