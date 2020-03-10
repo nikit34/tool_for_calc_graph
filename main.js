@@ -129,7 +129,10 @@ class Field extends MainPage {
   one_elem_click_processing(nodes_include) {
     for (let i = 0; i < nodes_include.length; i++) {
       if (nodes_include[i].hasAttribute("data-id")) {
-        nodes_include[i].setAttribute("class", "node draggable field mark save");
+        nodes_include[i].setAttribute(
+          "class",
+          "node draggable field mark save"
+        );
       } else {
         nodes_include[i].setAttribute("class", "node draggable field");
       }
@@ -146,7 +149,6 @@ class Field extends MainPage {
 }
 
 F = new Field();
-
 
 class Interaction {
   constructor() {
@@ -167,7 +169,13 @@ class Interaction {
         this.itemElement.style.position = "absolute";
         this.offsetX = e.clientX - itemRect.x;
         this.offsetY = e.clientY - itemRect.y;
-        new Interaction().moveItemToXY(this.itemElement, e.x, e.y, this.offsetX, this.offsetY);
+        new Interaction().moveItemToXY(
+          this.itemElement,
+          e.x,
+          e.y,
+          this.offsetX,
+          this.offsetY
+        );
         this.itemElement.ondragstart = function(e) {
           return false;
         };
@@ -180,7 +188,13 @@ class Interaction {
         this.itemMove = false;
         return;
       }
-      new Interaction().moveItemToXY(this.itemElement, e.x, e.y, this.offsetX, this.offsetY);
+      new Interaction().moveItemToXY(
+        this.itemElement,
+        e.x,
+        e.y,
+        this.offsetX,
+        this.offsetY
+      );
       return false;
     });
 
@@ -223,9 +237,8 @@ class Interaction {
 I = new Interaction();
 I.event_listens();
 
-
 class Data {
-  constructor(){}
+  constructor() {}
 
   getRandomInt(min, max) {
     min = Math.ceil(min);
@@ -246,15 +259,21 @@ class Data {
       random_value = this.getRandomInt(0, 100);
     }
     this.random_num[this.random_num.length] = random_value;
-    node.setAttribute("data-id", this.random_num[this.random_num.length - 1].toString());
-    localStorage.setItem(this.random_num[this.random_num.length - 1].toString(), value.toString());
+    node.setAttribute(
+      "data-id",
+      this.random_num[this.random_num.length - 1].toString()
+    );
+    localStorage.setItem(
+      this.random_num[this.random_num.length - 1].toString(),
+      value.toString()
+    );
   }
 }
 
-class PopUp extends Data{
+class PopUp extends Data {
   constructor() {
     super();
-  };
+  }
 
   select_display_body() {
     return document.getElementById("display_popup");
@@ -282,36 +301,61 @@ class PopUp extends Data{
     let display_popup = document.createElement("DIV");
     display_popup.setAttribute("id", "display_popup");
     node.appendChild(display_popup);
-    display_popup.style.top = (-parseFloat(node.offsetHeight) - parseFloat(display_popup.offsetHeight) / 2).toString()  + "px";
-    display_popup.style.left = (parseFloat(node.offsetWidth) / 2 - parseFloat(display_popup.offsetWidth) / 2).toString()  + "px";
+    display_popup.style.top =
+      (
+        -parseFloat(node.offsetHeight) -
+        parseFloat(display_popup.offsetHeight) / 2
+      ).toString() + "px";
+    display_popup.style.left =
+      (
+        parseFloat(node.offsetWidth) / 2 -
+        parseFloat(display_popup.offsetWidth) / 2
+      ).toString() + "px";
 
     let popup_exit = document.createElement("DIV");
     popup_exit.setAttribute("id", "exit_popup");
     node.appendChild(popup_exit);
-    popup_exit.style.top = (-parseFloat(node.offsetHeight) - parseFloat(display_popup.offsetHeight) / 2).toString()  + "px";
-    popup_exit.style.left = (parseFloat(display_popup.offsetWidth) - 2 * parseFloat(popup_exit.offsetWidth)).toString()  + "px";
+    popup_exit.style.top =
+      (
+        -parseFloat(node.offsetHeight) -
+        parseFloat(display_popup.offsetHeight) / 2
+      ).toString() + "px";
+    popup_exit.style.left =
+      (
+        parseFloat(display_popup.offsetWidth) -
+        2 * parseFloat(popup_exit.offsetWidth)
+      ).toString() + "px";
 
-    for(let key of Object.keys(localStorage)) {
-      if (key.toString() == node.dataset.id.toString()){
+    for (let key of Object.keys(localStorage)) {
+      if (key.toString() == node.dataset.id.toString()) {
         display_popup.textContent = "key: " + key;
         break;
       }
     }
 
-    this.select_display_body().parentElement.setAttribute("class", "node draggable field mark save");
+    this.select_display_body().parentElement.setAttribute(
+      "class",
+      "node draggable field mark save"
+    );
   }
 
   // TODO: do hidden all display popup for tap special button - not static method - will call other class MainPage <- Top Setting class
   remove_popup(display) {
     if (display) {
       if (this.select_display_body()) {
-        this.select_display_body().parentElement.setAttribute("class", "node draggable field mark save");
+        this.select_display_body().parentElement.setAttribute(
+          "class",
+          "node draggable field mark save"
+        );
         this.select_display_body().remove();
         this.select_display_exit().remove();
       }
     } else {
       if (this.select_popup_body()) {
-        this.select_popup_body().parentElement.setAttribute("class", "node draggable field");
+        this.select_popup_body().parentElement.setAttribute(
+          "class",
+          "node draggable field"
+        );
         this.select_popup_body().remove();
       }
     }
@@ -322,8 +366,14 @@ class PopUp extends Data{
     let popup_body = document.createElement("DIV");
     popup_body.setAttribute("id", "popup_body");
     build_start.appendChild(popup_body);
-    popup_body.style.top = (-parseFloat(popup_body.offsetHeight) - 10.0).toString() + "px";
-    popup_body.style.left = (parseFloat(build_start.offsetWidth) / 2 - parseFloat(popup_body.offsetWidth) / 2 - 5).toString() + "px";
+    popup_body.style.top =
+      (-parseFloat(popup_body.offsetHeight) - 10.0).toString() + "px";
+    popup_body.style.left =
+      (
+        parseFloat(build_start.offsetWidth) / 2 -
+        parseFloat(popup_body.offsetWidth) / 2 -
+        5
+      ).toString() + "px";
 
     let popup_input = document.createElement("INPUT");
     popup_input.setAttribute("id", "popup_input");
@@ -335,15 +385,27 @@ class PopUp extends Data{
     popup_body.appendChild(popup_button);
     popup_button.innerHTML = "save";
 
-    this.select_popup_body().parentElement.setAttribute("class", "node draggable field mark");
+    this.select_popup_body().parentElement.setAttribute(
+      "class",
+      "node draggable field mark"
+    );
   }
 
   double_click_proc(e) {
     e.preventDefault();
     if (this.select_popup_body() || !e.target.classList.contains("save")) {
-      if (e.target.classList.contains("field") && !(e.target.classList.contains("mark")) && (this.select_popup_body() == null)) {
+      if (
+        e.target.classList.contains("field") &&
+        !e.target.classList.contains("mark") &&
+        this.select_popup_body() == null
+      ) {
         this.create_popup(e);
-      } else if ((e.target.id == "field" || e.target.classList.contains("field") || e.target.id == "popup_body") && this.select_popup_body()) {
+      } else if (
+        (e.target.id == "field" ||
+          e.target.classList.contains("field") ||
+          e.target.id == "popup_body") &&
+        this.select_popup_body()
+      ) {
         this.remove_popup(false);
       }
     }
@@ -351,26 +413,51 @@ class PopUp extends Data{
 
   one_click_proc(e) {
     e.preventDefault();
-    if ((e.target.id == "popup_button") && this.select_popup_input().value && Number.isInteger(parseInt(this.select_popup_input().value))) {
+    if (
+      e.target.id == "popup_button" &&
+      this.select_popup_input().value &&
+      Number.isInteger(parseInt(this.select_popup_input().value))
+    ) {
       let value = this.select_popup_input().value;
       let node = this.select_popup_body().parentElement;
       this.save_data(node, value);
       this.create_display_popup(node, value);
-    } else if ((e.target.id == "popup_button") && this.select_popup_input().value && !Number.isInteger(parseInt(this.select_popup_input().value))) {
-      this.select_popup_body().style.backgroundColor = "rgba(255, 150, 150, 0.5)";
+    } else if (
+      e.target.id == "popup_button" &&
+      this.select_popup_input().value &&
+      !Number.isInteger(parseInt(this.select_popup_input().value))
+    ) {
+      this.select_popup_body().style.backgroundColor =
+        "rgba(255, 150, 150, 0.5)";
       let random_int = new Data().getRandomInt(0, 100);
       this.select_popup_input().value = random_int;
-    } else if ((e.target.id == "popup_body" || e.target.id == "popup_button") && !(this.select_popup_input().value)) {
-      this.select_popup_body().style.backgroundColor = "rgba(255, 150, 150, 0.5)";
+    } else if (
+      (e.target.id == "popup_body" || e.target.id == "popup_button") &&
+      !this.select_popup_input().value
+    ) {
+      this.select_popup_body().style.backgroundColor =
+        "rgba(255, 150, 150, 0.5)";
     } else if (e.target.id == "popup_input") {
-      this.select_popup_body().style.backgroundColor = "rgba(150, 150, 255, 0.5)";
-    } else if ((e.target.id == "display_popup") || ((this.select_display_body() != null) && (e.target == this.select_display_body().parentElement))) {
+      this.select_popup_body().style.backgroundColor =
+        "rgba(150, 150, 255, 0.5)";
+    } else if (
+      e.target.id == "display_popup" ||
+      (this.select_display_body() != null &&
+        e.target == this.select_display_body().parentElement)
+    ) {
       let node = this.select_display_body().parentElement;
       this.remove_popup(true);
       node.setAttribute("class", "node draggable field mark save");
-    } else if ((e.target.textContent != "") && (e.target.classList.contains("save")) && (this.select_popup_body() == null)) {
+    } else if (
+      e.target.textContent != "" &&
+      e.target.classList.contains("save") &&
+      this.select_popup_body() == null
+    ) {
       this.create_display_popup(e.target, e.target.textContent);
-    } else if ((e.target.id == "exit_popup") && (e.target.parentElement.classList.contains("save"))) {
+    } else if (
+      e.target.id == "exit_popup" &&
+      e.target.parentElement.classList.contains("save")
+    ) {
       let node = this.select_display_body().parentElement;
       this.remove_popup(true);
       this.delete_data(node);
@@ -391,9 +478,72 @@ class PopUp extends Data{
 var PU = new PopUp();
 PU.processing_popup();
 
-// class Curves extends Data {
-//   constructor() {};
+class DrawLine extends Data {
+  constructor() {
+    super();
+    this.canvas_elem = document.getElementById("field");
+    this.context = this.canvas_elem.getContext("2d");
+    this.start_position = { x: 0, y: 0 };
+    this.line_coordinate = { x: 0, y: 0 };
+    this.isDrawStart = false;
+  }
 
-// }
+  getClientOffset(e) {
+    let { pageX, pageY } = e.touches ? e.touches[0] : e;
+    let x = pageX - this.canvas_elem.offsetLeft;
+    let y = pageY - this.canvas_elem.offsetTop;
+    return {x, y};
+  }
 
-// var C = new Curves();
+  drawLine() {
+    this.context.beginPath();
+    this.context.moveTo(this.start_position.x, this.start_position.y);
+    this.context.lineTo(this.line_coordinate.x, this.line_coordinate.y);
+    this.context.stroke();
+  }
+
+  mouseDownListener(e) {
+    this.start_position = this.getClientOffset(e);
+    this.isDrawStart = true;
+  }
+
+  mouseMoveListener(e) {
+    if (!this.isDrawStart) return;
+
+    this.line_coordinate = this.getClientOffset(e);
+    this.clearCanvas();
+    this.drawLine();
+  }
+
+  mouseupListener(e) {
+    this.isDrawStart = false;
+  }
+
+  clearCanvas() {
+    this.context.clearRect(0, 0, this.canvas_elem.width, this.canvas_elem.height);
+  }
+
+  draw_line() {
+    this.canvas_elem.addEventListener("mousedown", function(e) {
+      DL.mouseDownListener(e);
+    });
+    this.canvas_elem.addEventListener("mousemove", function(e) {
+      DL.mouseMoveListener(e);
+    });
+    this.canvas_elem.addEventListener("mouseup", function(e) {
+      DL.mouseupListener(e)
+    });
+    this.canvas_elem.addEventListener("touchstart", function(e) {
+      DL.mouseDownListener(e);
+    });
+    this.canvas_elem.addEventListener("touchmove",function(e) {
+      DL.mouseMoveListener(e);
+    });
+    this.canvas_elem.addEventListener("touchend", function(e) {
+      DL.mouseupListener(e)
+    });
+  }
+}
+
+var DL = new DrawLine();
+DL.draw_line();
