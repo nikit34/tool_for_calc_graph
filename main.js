@@ -351,11 +351,15 @@ class PopUp extends Data{
 
   one_click_proc(e) {
     e.preventDefault();
-    if ((e.target.id == "popup_button") && this.select_popup_input().value) {
+    if ((e.target.id == "popup_button") && this.select_popup_input().value && Number.isInteger(parseInt(this.select_popup_input().value))) {
       let value = this.select_popup_input().value;
       let node = this.select_popup_body().parentElement;
       this.save_data(node, value);
       this.create_display_popup(node, value);
+    } else if ((e.target.id == "popup_button") && this.select_popup_input().value && !Number.isInteger(parseInt(this.select_popup_input().value))) {
+      this.select_popup_body().style.backgroundColor = "rgba(255, 150, 150, 0.5)";
+      let random_int = new Data().getRandomInt(0, 100);
+      this.select_popup_input().value = random_int;
     } else if ((e.target.id == "popup_body" || e.target.id == "popup_button") && !(this.select_popup_input().value)) {
       this.select_popup_body().style.backgroundColor = "rgba(255, 150, 150, 0.5)";
     } else if (e.target.id == "popup_input") {
@@ -364,7 +368,7 @@ class PopUp extends Data{
       let node = this.select_display_body().parentElement;
       this.remove_popup(true);
       node.setAttribute("class", "node draggable field mark save");
-    } else if ((e.target.textContent != "") && (e.target.classList.contains("save")) && (this.select_display_body() == null) && (this.select_popup_body() == null)) {
+    } else if ((e.target.textContent != "") && (e.target.classList.contains("save")) && (this.select_popup_body() == null)) {
       this.create_display_popup(e.target, e.target.textContent);
     } else if ((e.target.id == "exit_popup") && (e.target.parentElement.classList.contains("save"))) {
       let node = this.select_display_body().parentElement;
@@ -387,9 +391,9 @@ class PopUp extends Data{
 var PU = new PopUp();
 PU.processing_popup();
 
-class B_curves extends Data {
-  constructor() {}
+// class Curves extends Data {
+//   constructor() {};
 
+// }
 
-}
-
+// var C = new Curves();
