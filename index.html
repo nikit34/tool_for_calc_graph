@@ -12,22 +12,28 @@
       <div class="container_row">
         <div class="container_col">
           <div class="container_row">
-          <button
-            onclick="TS.showInputGenerateObjects()"
-            id="buttonGenerateObjects"
-          >
-            Enter count nodes
+            <button
+              onclick="TS.showInputGenerateObjects()"
+              id="buttonGenerateObjects"
+            >
+              Enter count nodes
+            </button>
+            <input type="text" value="integers" id="inputGenerateObjects" />
+          </div>
+          <div class="container_row">
+            <canvas id="field" width="1100" height="400"></canvas>
+          </div>
+          <div class="container_row">
+            Count nodes in field: <span id="show_count_nodes_field">0</span>
+
+          <button onclick="D.clear_localStorage()" id="clear_localStorage">
+            clear storage nodes
           </button>
-          <input type="text" value="integers" id="inputGenerateObjects" />
-        </div>
-        <div class="container_row">
-          <canvas id="field" width="1100" height="600"></canvas>
-        </div>
-        Count nodes in field: <span id="show_count_nodes_field">0</span>
-      </div>
+        </div></div>
         <div class="container_col">
           <div id="init_date">
-            Init date (total objects: <span id="show_total_count_nodes">0</span>)<br>
+            Init date (total objects:
+            <span id="show_total_count_nodes">0</span>)<br />
             State date (now objects: <span id="show_now_count_nodes">0</span>)
           </div>
         </div>
