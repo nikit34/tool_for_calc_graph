@@ -271,7 +271,7 @@ class Data {
     );
     localStorage.setItem(
       this.random_num[this.random_num.length - 1].toString(),
-      [value.toString(), (parseFloat(node.offsetTop) + parseFloat(node.offsetHeight) / 2 - parseFloat(F.rect_border_field.top)).toString(), (parseFloat(node.offsetLeft) + parseFloat(node.offsetWidth) / 2 - parseFloat(F.rect_border_field.left)).toString()]
+      [value.toString(), (Math.round(parseFloat(node.offsetLeft) + parseFloat(node.offsetWidth) / 2 - parseFloat(F.rect_border_field.left))).toString()]
     );
   }
 }
@@ -586,14 +586,14 @@ class DrawLine {
   draw_line() {
     this.canvas_elem.addEventListener("mousedown", function(e) {
       DL.mouseDownListener(e);
-      CLN.get_coord_line_node(e);
+      CLN.get_coord_line(e);
     });
     this.canvas_elem.addEventListener("mousemove", function(e) {
       DL.mouseMoveListener(e);
     });
     this.canvas_elem.addEventListener("mouseup", function(e) {
       DL.mouseupListener(e)
-      CLN.get_coord_line_node(e);
+      CLN.get_coord_line(e);
     });
     this.canvas_elem.addEventListener("touchstart", function(e) {
       DL.mouseDownListener(e);
@@ -614,18 +614,57 @@ DL.draw_line();
 class ConcatLineNodes extends DrawLine {
   constructor() {
     super();
+    this.pair_nodes = [];
+    this.count_get_coord = 0;
+    this.nodes = Object.values(localStorage);
   }
 
-  affiliation(x_line, y_line, x_node, y_node) {
-    console.log(x_line, y_line, x_node, y_node);
+  add_binding_localStorage(pair_nodes){
+    let existing = localStorage.getItem(pair_nodes[0]);
+    existing = existing ? existing.split(",") : [];
+    existing.push(pair_nodes[1]);
+    localStorage.setItem(pair_nodes[0], existing.toString());
+
+    existing = localStorage.getItem(pair_nodes[1]);
+    existing = existing ? existing.split(",") : [];
+    existing.push(pair_nodes[0]);
+    localStorage.setItem(pair_nodes[1], existing.toString());
   }
 
-  get_coord_line_node(e) {
-    let {x_line, y_line} = this.getClientOffset(e);
-    let x_node, y_node = [Object.values(localStorage), Object.values(localStorage)[0][2]];
-    this.affiliation(x_line, y_line, x_node, y_node);
+  binding(nearest_node){
+    this.pair_nodes.push(nearest_node);
+    if (this.count_get_coord == 2) {
+      // this.add_binding_localStorage(pair_nodes);
+      // call_weight();
+      CLN = new ConcatLineNodes();
+    }
   }
 
+  affiliation(point_line) {
+    let x_node = 0,
+        y_node = 0;
+    let min_dist = Number.MAX_VALUE;
+    let x_line = parseFloat(point_line.x),
+        y_line = parseFloat(point_line.y);
+    let index_min_dist = 0;
+    for (let i = 0; i < this.nodes.length; i++) {
+      x_node = parseInt(this.nodes[i].split(",")[1]);
+      y_node = parseInt(this.nodes[i].split(",")[2]);
+      if (Math.sqrt(Math.pow(x_line - x_node, 2) + Math.pow(y_line - y_node, 2)) < min_dist) {
+        min_dist = Math.sqrt(Math.pow(x_line - x_node, 2) + Math.pow(y_line - y_node, 2));
+        index_min_dist = i;
+      }
+    }
+    return localStorage.key(index_min_dist);
+  }
+
+  get_coord_line(e) {
+    this.count_get_coord++;
+    let point_line = this.getClientOffset(e);
+    let nearest_node = this.affiliation(point_line);
+    console.log(this.count_get_coord, nearest_node);
+    this.binding(nearest_node);
+  }
 }
 
 var CLN = new ConcatLineNodes();
