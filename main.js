@@ -269,9 +269,15 @@ class Data {
       "data-id",
       this.random_num[this.random_num.length - 1].toString()
     );
+    let canvas_elem = document.getElementById("field");
+    let x_node = parseFloat(node.offsetLeft) + parseFloat(node.offsetWidth) / 2 - parseFloat(canvas_elem.offsetLeft);
+    let y_node = parseFloat(node.offsetTop) + parseFloat(node.offsetHeight) / 2 - parseFloat(canvas_elem.offsetTop);
     localStorage.setItem(
-      this.random_num[this.random_num.length - 1].toString(),
-      [value.toString(), (Math.round(parseFloat(node.offsetLeft) + parseFloat(node.offsetWidth) / 2 - parseFloat(F.rect_border_field.left))).toString()]
+      this.random_num[this.random_num.length - 1].toString(), [
+        value.toString(),
+        (x_node).toString(),
+        (y_node).toString()
+      ]
     );
   }
 }
@@ -309,7 +315,7 @@ class PopUp extends Data {
     let display_popup = document.createElement("DIV");
 
     if (value != null) {
-      node.textContent = value.toString();
+      node.textContent = parseInt(value).toString();
     }
     for (let key of Object.keys(localStorage)) {
       if (key.toString() == node.dataset.id.toString()) {
@@ -536,79 +542,76 @@ PU.processing_popup();
 
 
 class DrawLine {
-  constructor() {
+  constructor(canvas_elem, context, start_position, line_coordinate, isDrawStart) {
     this.canvas_elem = document.getElementById("field");
     this.context = this.canvas_elem.getContext("2d");
-    this.line_coordinate = { x: 0, y: 0 };
-    this.isDrawStart = false;
+    this.start_position = start_position;
+    this.line_coordinate = line_coordinate;
+    this.isDrawStart = isDrawStart;
   }
 
-
-
-
-  getClientOffset(e) {
+  get_client_offset(e) {
     let { pageX, pageY } = e.touches ? e.touches[0] : e;
     let x = pageX - this.canvas_elem.offsetLeft;
     let y = pageY - this.canvas_elem.offsetTop;
     return {x, y};
   }
 
-  drawLine() {
+  draw_line() {
     this.context.beginPath();
     this.context.moveTo(this.start_position.x, this.start_position.y);
     this.context.lineTo(this.line_coordinate.x, this.line_coordinate.y);
     this.context.stroke();
   }
 
-  mouseDownListener(e) {
-    this.start_position = this.getClientOffset(e);
+  mouse_down_listener(e) {
+    this.start_position = this.get_client_offset(e);
     this.isDrawStart = true;
     return this.start_position;
   }
 
-  mouseMoveListener(e) {
+  mouse_move_listener(e) {
     if (!this.isDrawStart) return;
-
-    this.line_coordinate = this.getClientOffset(e);
-    this.clearCanvas();
-    this.drawLine();
+    this.line_coordinate = this.get_client_offset(e);
+    this.clear_canvas();
+    this.draw_line();
     return this.start_position;
   }
 
-  mouseupListener(e) {
+  mouse_up_listener(e) {
     this.isDrawStart = false;
   }
 
-  clearCanvas() {
+  clear_canvas() {
     this.context.clearRect(0, 0, this.canvas_elem.width, this.canvas_elem.height);
   }
 
-  draw_line() {
+  start_draw() {
     this.canvas_elem.addEventListener("mousedown", function(e) {
-      DL.mouseDownListener(e);
+      DL.mouse_down_listener(e);
       CLN.get_coord_line(e);
     });
     this.canvas_elem.addEventListener("mousemove", function(e) {
-      DL.mouseMoveListener(e);
+      DL.mouse_move_listener(e);
     });
     this.canvas_elem.addEventListener("mouseup", function(e) {
-      DL.mouseupListener(e)
+      DL.mouse_up_listener(e);
       CLN.get_coord_line(e);
     });
     this.canvas_elem.addEventListener("touchstart", function(e) {
-      DL.mouseDownListener(e);
+      DL.mouse_down_listener(e);
     });
     this.canvas_elem.addEventListener("touchmove",function(e) {
-      DL.mouseMoveListener(e);
+      DL.mouse_move_listener(e);
     });
     this.canvas_elem.addEventListener("touchend", function(e) {
-      DL.mouseupListener(e)
+      DL.mouse_up_listener(e)
     });
   }
 }
 
-var DL = new DrawLine();
-DL.draw_line();
+var DL = new DrawLine(document.getElementById("field"), document.getElementById("field").getContext("2d"), { x: 0, y: 0 }, { x: 0, y: 0 }, false);
+DL.start_draw();
 
 
 class ConcatLineNodes extends DrawLine {
@@ -634,8 +637,10 @@ class ConcatLineNodes extends DrawLine {
   binding(nearest_node){
     this.pair_nodes.push(nearest_node);
     if (this.count_get_coord == 2) {
-      // this.add_binding_localStorage(pair_nodes);
-      // call_weight();
+      this.add_binding_localStorage(this.pair_nodes);
+
+      // SW.call_weight(); class SetWeight
+      this.draw_line({})
       CLN = new ConcatLineNodes();
     }
   }
@@ -660,10 +665,10 @@ class ConcatLineNodes extends DrawLine {
 
   get_coord_line(e) {
     this.count_get_coord++;
-    let point_line = this.getClientOffset(e);
+    let point_line = this.get_client_offset(e);
     let nearest_node = this.affiliation(point_line);
-    console.log(this.count_get_coord, nearest_node);
     this.binding(nearest_node);
+    console.log(nearest_node);
   }
 }
 
