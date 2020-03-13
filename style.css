@@ -127,3 +127,14 @@ body {
   top: 10px;
   left: 70px;
 }
+
+.popup_weight {
+  position: absolute;
+  width: 120px;
+  height: 40px;
+  text-align: center;
+  font-weight: 600;
+  line-height: 30px;
+  border-radius: 5%;
+  background-color: rgba(150, 150, 255, 0.5);
+}
