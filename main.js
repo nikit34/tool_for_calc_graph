@@ -612,18 +612,15 @@ class DrawLine {
     });
     this.canvas_elem.addEventListener("mouseup", function(e) {
       DL.mouse_up_listener(e);
-      CLN.get_coord_line(e);
     });
     this.canvas_elem.addEventListener("touchstart", function(e) {
       DL.mouse_down_listener(e);
-      CLN.get_coord_line(e);
     });
-    this.canvas_elem.addEventListener("touchmove",function(e) {
+    this.canvas_elem.addEventListener("touchmove", function(e) {
       DL.mouse_move_listener(e);
     });
     this.canvas_elem.addEventListener("touchend", function(e) {
       DL.mouse_up_listener(e);
-      CLN.get_coord_line(e);
     });
   }
 }
@@ -664,9 +661,11 @@ class ConcatLineNodes extends DrawLine {
 
   binding(nearest_node){
     this.pair_nodes.push(nearest_node);
+    if (this.pair_nodes.length > 2) {
+      this.pair_nodes.shift();
+    }
     if (this.pair_nodes.length == 2 &&
-        document.querySelectorAll("div[data-id='" + this.pair_nodes[0] + "']").length == 1 &&
-        document.querySelectorAll("div[data-id='" + this.pair_nodes[1] + "']").length == 1
+        this.pair_nodes[0] != this.pair_nodes[1]
       ) {
       let coord_node = this.Add_binding_localstorage_Draw_line(this.pair_nodes);
       SW.create_weight(coord_node);
@@ -682,11 +681,15 @@ class ConcatLineNodes extends DrawLine {
         y_line = parseFloat(point_line.y);
     let index_min_dist = 0;
     for (let i = 0; i < this.nodes.length; i++) {
-      x_node = parseInt(this.nodes[i].split(",")[1]);
-      y_node = parseInt(this.nodes[i].split(",")[2]);
-      if (Math.sqrt(Math.pow(x_line - x_node, 2) + Math.pow(y_line - y_node, 2)) < min_dist) {
-        min_dist = Math.sqrt(Math.pow(x_line - x_node, 2) + Math.pow(y_line - y_node, 2));
-        index_min_dist = i;
+      if (document.querySelectorAll("div[data-id='" + localStorage.key(i) + "']").length == 1){
+        x_node = parseInt(this.nodes[i].split(",")[1]);
+        y_node = parseInt(this.nodes[i].split(",")[2]);
+        if (Math.sqrt(Math.pow(x_line - x_node, 2) + Math.pow(y_line - y_node, 2)) < min_dist) {
+          min_dist = Math.sqrt(Math.pow(x_line - x_node, 2) + Math.pow(y_line - y_node, 2));
+          index_min_dist = i;
+        }
+      } else {
+        localStorage.removeItem(localStorage.key(i));
       }
     }
     return localStorage.key(index_min_dist);
