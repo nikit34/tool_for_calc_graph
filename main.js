@@ -616,12 +616,14 @@ class DrawLine {
     });
     this.canvas_elem.addEventListener("touchstart", function(e) {
       DL.mouse_down_listener(e);
+      CLN.get_coord_line(e);
     });
     this.canvas_elem.addEventListener("touchmove",function(e) {
       DL.mouse_move_listener(e);
     });
     this.canvas_elem.addEventListener("touchend", function(e) {
-      DL.mouse_up_listener(e)
+      DL.mouse_up_listener(e);
+      CLN.get_coord_line(e);
     });
   }
 }
@@ -634,7 +636,6 @@ class ConcatLineNodes extends DrawLine {
   constructor() {
     super(document.getElementById("field"), document.getElementById("field").getContext("2d"));
     this.pair_nodes = [];
-    this.count_get_coord = 0;
     this.nodes = Object.values(localStorage);
   }
 
@@ -663,7 +664,7 @@ class ConcatLineNodes extends DrawLine {
 
   binding(nearest_node){
     this.pair_nodes.push(nearest_node);
-    if (this.count_get_coord == 2 &&
+    if (this.pair_nodes.length == 2 &&
         document.querySelectorAll("div[data-id='" + this.pair_nodes[0] + "']").length == 1 &&
         document.querySelectorAll("div[data-id='" + this.pair_nodes[1] + "']").length == 1
       ) {
@@ -692,7 +693,6 @@ class ConcatLineNodes extends DrawLine {
   }
 
   get_coord_line(e) {
-    this.count_get_coord++;
     let point_line = this.get_client_offset(e);
     let nearest_node = this.affiliation(point_line);
     this.binding(nearest_node);
