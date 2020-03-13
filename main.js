@@ -578,8 +578,6 @@ class DrawLine {
     this.context.moveTo(start_pos.x, start_pos.y);
     this.context.lineTo(line_coord.x, line_coord.y);
     this.context.stroke();
-    this.context.closePath();
-    this.context.save();
   }
 
   mouse_down_listener(e) {
@@ -591,15 +589,19 @@ class DrawLine {
   mouse_move_listener(e) {
     if (!this.isDrawStart) return;
     this.line_coordinate = this.get_client_offset(e);
+    this.clear_canvas();
+    this.draw_line();
     return this.start_position;
   }
 
   mouse_up_listener(e) {
+    this.line_coordinate = this.get_client_offset(e);
     this.isDrawStart = false;
+    this.clear_canvas();
   }
 
   clear_canvas() {
-    DL.context.clearRect(0, 0, DL.canvas_elem.width, DL.canvas_elem.height);
+    this.context.clearRect(0, 0, this.canvas_elem.width, this.canvas_elem.height);
   }
 
   start_draw() {
@@ -612,6 +614,7 @@ class DrawLine {
     });
     this.canvas_elem.addEventListener("mouseup", function(e) {
       DL.mouse_up_listener(e);
+      CLN.get_coord_line(e);
     });
     this.canvas_elem.addEventListener("touchstart", function(e) {
       DL.mouse_down_listener(e);
@@ -631,7 +634,7 @@ DL.start_draw();
 
 class ConcatLineNodes extends DrawLine {
   constructor() {
-    super(document.getElementById("field"), document.getElementById("field").getContext("2d"));
+    super(document.getElementById("field_line"), document.getElementById("field_line").getContext("2d"));
     this.pair_nodes = [];
     this.nodes = Object.values(localStorage);
   }
@@ -664,12 +667,12 @@ class ConcatLineNodes extends DrawLine {
     if (this.pair_nodes.length > 2) {
       this.pair_nodes.shift();
     }
-    if (this.pair_nodes.length == 2 &&
-        this.pair_nodes[0] != this.pair_nodes[1]
-      ) {
+    if (this.pair_nodes.length == 2 && this.pair_nodes[0] != this.pair_nodes[1]) {
       let coord_node = this.Add_binding_localstorage_Draw_line(this.pair_nodes);
       SW.create_weight(coord_node);
       CLN = new ConcatLineNodes();
+    } else if (this.pair_nodes.length == 2 && this.pair_nodes[0] == this.pair_nodes[1]) {
+      this.pair_nodes = []
     }
   }
 
@@ -696,6 +699,7 @@ class ConcatLineNodes extends DrawLine {
   }
 
   get_coord_line(e) {
+    this.nodes = Object.values(localStorage);
     let point_line = this.get_client_offset(e);
     let nearest_node = this.affiliation(point_line);
     this.binding(nearest_node);

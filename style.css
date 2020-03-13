@@ -34,6 +34,7 @@ body {
   margin: 5px;
   background-color: rgba(0, 0, 0, 0.8);
   border-radius: 50%;
+  z-index: 1;
 }
 
 .draggable {
@@ -66,7 +67,16 @@ body {
 }
 
 #field {
+  background-color: rgba(0, 0, 0, 0);
+  z-index: 1;
+}
+
+#field_line {
   background-color: white;
+  z-index: 0;
+  position: absolute;
+  top: 155px;
+  left: 59px;
 }
 
 #init_date {
@@ -110,6 +120,7 @@ body {
   border-radius: 5%;
   background-color: rgba(150, 150, 255, 0.5);
   box-shadow: 0px -10px 10px 5px rgba(0,0,0,0.75);
+  z-index: 1;
 }
 
 .popup_input {
@@ -137,4 +148,5 @@ body {
   line-height: 30px;
   border-radius: 5%;
   background-color: rgba(150, 150, 255, 0.5);
+  z-index: 1;
 }
