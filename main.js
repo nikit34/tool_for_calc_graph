@@ -542,12 +542,12 @@ PU.processing_popup();
 
 
 class DrawLine {
-  constructor(canvas_elem, context, start_position, line_coordinate, isDrawStart) {
-    this.canvas_elem = document.getElementById("field");
-    this.context = this.canvas_elem.getContext("2d");
-    this.start_position = start_position;
-    this.line_coordinate = line_coordinate;
-    this.isDrawStart = isDrawStart;
+  constructor(canvas_elem, context) {
+    this.canvas_elem = canvas_elem;
+    this.context = context;
+    this.start_position = { x: 0, y: 0 };
+    this.line_coordinate = { x: 0, y: 0 };
+    this.isDrawStart = false;
   }
 
   get_client_offset(e) {
@@ -557,11 +557,13 @@ class DrawLine {
     return {x, y};
   }
 
-  draw_line() {
+  draw_line(start_pos = this.start_position, line_coord = this.line_coordinate) {
     this.context.beginPath();
-    this.context.moveTo(this.start_position.x, this.start_position.y);
-    this.context.lineTo(this.line_coordinate.x, this.line_coordinate.y);
+    this.context.moveTo(start_pos.x, start_pos.y);
+    this.context.lineTo(line_coord.x, line_coord.y);
     this.context.stroke();
+    this.context.closePath();
+    this.context.save();
   }
 
   mouse_down_listener(e) {
@@ -573,8 +575,6 @@ class DrawLine {
   mouse_move_listener(e) {
     if (!this.isDrawStart) return;
     this.line_coordinate = this.get_client_offset(e);
-    this.clear_canvas();
-    this.draw_line();
     return this.start_position;
   }
 
@@ -583,7 +583,7 @@ class DrawLine {
   }
 
   clear_canvas() {
-    this.context.clearRect(0, 0, this.canvas_elem.width, this.canvas_elem.height);
+    DL.context.clearRect(0, 0, DL.canvas_elem.width, DL.canvas_elem.height);
   }
 
   start_draw() {
@@ -610,37 +610,45 @@ class DrawLine {
   }
 }
 
-var DL = new DrawLine(document.getElementById("field"), document.getElementById("field").getContext("2d"), { x: 0, y: 0 }, { x: 0, y: 0 }, false);
+var DL = new DrawLine(document.getElementById("field"), document.getElementById("field").getContext("2d"));
 DL.start_draw();
 
 
 class ConcatLineNodes extends DrawLine {
   constructor() {
-    super();
+    super(document.getElementById("field"), document.getElementById("field").getContext("2d"));
     this.pair_nodes = [];
     this.count_get_coord = 0;
     this.nodes = Object.values(localStorage);
   }
 
-  add_binding_localStorage(pair_nodes){
-    let existing = localStorage.getItem(pair_nodes[0]);
-    existing = existing ? existing.split(",") : [];
+  get_existing_localStorage(node){
+    return localStorage.getItem(node) ? localStorage.getItem(node).split(",") : [];
+  }
+
+  get_pos_node(existing) {
+    return { x: parseInt(existing[1]), y: parseInt(existing[2]) };
+  }
+
+  Add_binding_localstorage_Draw_line(pair_nodes){
+    let existing = this.get_existing_localStorage(pair_nodes[0]);
+    let start_pos = this.get_pos_node(existing);
     existing.push(pair_nodes[1]);
     localStorage.setItem(pair_nodes[0], existing.toString());
 
-    existing = localStorage.getItem(pair_nodes[1]);
-    existing = existing ? existing.split(",") : [];
+    existing = this.get_existing_localStorage(pair_nodes[1]);
+    let line_coord = this.get_pos_node(existing);
     existing.push(pair_nodes[0]);
     localStorage.setItem(pair_nodes[1], existing.toString());
+
+    this.draw_line(start_pos, line_coord);
   }
 
   binding(nearest_node){
     this.pair_nodes.push(nearest_node);
     if (this.count_get_coord == 2) {
-      this.add_binding_localStorage(this.pair_nodes);
-
+      this.Add_binding_localstorage_Draw_line(this.pair_nodes);
       // SW.call_weight(); class SetWeight
-      this.draw_line({})
       CLN = new ConcatLineNodes();
     }
   }
@@ -668,7 +676,6 @@ class ConcatLineNodes extends DrawLine {
     let point_line = this.get_client_offset(e);
     let nearest_node = this.affiliation(point_line);
     this.binding(nearest_node);
-    console.log(nearest_node);
   }
 }
 
