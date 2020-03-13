@@ -684,22 +684,31 @@ class ConcatLineNodes extends DrawLine {
         y_line = parseFloat(point_line.y);
     let index_min_dist = 0;
     for (let i = 0; i < this.nodes.length; i++) {
-      if (document.querySelectorAll("div[data-id='" + localStorage.key(i) + "']").length == 1){
-        x_node = parseInt(this.nodes[i].split(",")[1]);
-        y_node = parseInt(this.nodes[i].split(",")[2]);
-        if (Math.sqrt(Math.pow(x_line - x_node, 2) + Math.pow(y_line - y_node, 2)) < min_dist) {
-          min_dist = Math.sqrt(Math.pow(x_line - x_node, 2) + Math.pow(y_line - y_node, 2));
-          index_min_dist = i;
-        }
-      } else {
-        localStorage.removeItem(localStorage.key(i));
+      x_node = parseInt(this.nodes[i].split(",")[1]);
+      y_node = parseInt(this.nodes[i].split(",")[2]);
+      if (Math.sqrt(Math.pow(x_line - x_node, 2) + Math.pow(y_line - y_node, 2)) < min_dist) {
+        min_dist = Math.sqrt(Math.pow(x_line - x_node, 2) + Math.pow(y_line - y_node, 2));
+        index_min_dist = i;
       }
     }
     return localStorage.key(index_min_dist);
   }
 
-  get_coord_line(e) {
+  check_view_nodes() {
     this.nodes = Object.values(localStorage);
+    for (let i = 0; i != this.nodes.length; i++) {
+      if (localStorage.key(i) != null) {
+        if (document.querySelectorAll("div[data-id='" + localStorage.key(i) + "']").length != 1){
+          localStorage.removeItem(localStorage.key(i));
+          i = 0;
+        }
+      }
+      this.nodes = Object.values(localStorage);
+    }
+  }
+
+  get_coord_line(e) {
+    this.check_view_nodes();
     let point_line = this.get_client_offset(e);
     let nearest_node = this.affiliation(point_line);
     this.binding(nearest_node);
