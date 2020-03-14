@@ -522,8 +522,8 @@ class PopUp extends Data {
           node.setAttribute("class", "node draggable field");
           break;
         }
+        break;
       }
-      break;
     }
   }
 
@@ -542,14 +542,35 @@ PU.processing_popup();
 
 
 class SetWeight {
-  constructor() {}
+  constructor(node_1, node_2) {
+    this.node_1 = node_1;
+    this.node_2 = node_2;
+  }
 
-  create_weight(coord_node) {
+  select_popup_weight() {
+    return document.getElementsByClassName("popup_weight");
+  }
+
+  select_weight_button() {
+    return document.getElementsByClassName("weight_button");
+  }
+
+  select_weight_input() {
+    return document.getElementsByClassName("weight_input");
+  }
+
+  create_weight() {
     let body_canvas = document.getElementById("field");
     let popup_weight = document.createElement("DIV");
     popup_weight.setAttribute("class", "popup_weight");
-    popup_weight.style.top = ((parseInt(coord_node[0].y) + parseInt(coord_node[1].y)) / 2 + 155).toString() + "px";
-    popup_weight.style.left = ((parseInt(coord_node[0].x) + parseInt(coord_node[1].x)) / 2 + 60).toString() + "px";
+
+    let existing = CLN.get_existing_localStorage(this.node_1);
+    let start_pos = CLN.get_pos_node(existing);
+    existing = CLN.get_existing_localStorage(this.node_2);
+    let line_coord = CLN.get_pos_node(existing);
+
+    popup_weight.style.top = ((parseInt(start_pos.y) + parseInt(line_coord.y)) / 2 + 155).toString() + "px";
+    popup_weight.style.left = ((parseInt(start_pos.x) + parseInt(line_coord.x)) / 2 + 60).toString() + "px";
     body_canvas.after(popup_weight);
 
     let weight_input = document.createElement("INPUT");
@@ -562,9 +583,54 @@ class SetWeight {
     popup_weight.appendChild(weight_button);
     weight_button.innerHTML = "save";
   }
+
+  create_display_weight(value) {
+    let body_canvas = document.getElementById("field");
+    let display_weight = document.createElement("DIV");
+    display_weight.textContent = value;
+    display_weight.setAttribute("class", "display_weight");
+
+    let existing = CLN.get_existing_localStorage(this.node_1);
+    let start_pos = CLN.get_pos_node(existing);
+    existing = CLN.get_existing_localStorage(this.node_2);
+    let line_coord = CLN.get_pos_node(existing);
+
+    display_weight.style.top = ((parseInt(start_pos.y) + parseInt(line_coord.y)) / 2 + 155).toString() + "px";
+    display_weight.style.left = ((parseInt(start_pos.x) + parseInt(line_coord.x)) / 2 + 60).toString() + "px";
+    body_canvas.after(display_weight);
+  }
+
+  one_click_proc(e){
+    let loop_weight = this.select_popup_weight().length;
+    if (loop_weight == 0) {
+      loop_weight = 1;
+    }
+    for (let i = 0; i < loop_weight; i++) {
+      if (e.target.className == "weight_button") {
+        if (Number.isInteger(parseInt(SW.select_weight_input()[i].value))) {
+          let value = this.select_weight_input()[i].value;
+          e.target.parentElement.remove();
+          this.create_display_weight(value);
+        } else {
+          this.select_popup_weight()[i].style.backgroundColor = "rgba(255, 150, 150, 0.5)";
+          let random_int = D.getRandomInt(0, 100);
+          this.select_weight_input()[i].value = random_int;
+        }
+        break;
+      }
+    }
+  }
+
+  processing_weight() {
+    document.body.addEventListener("click", function(e) {
+      SW.one_click_proc(e);
+    });
+  }
 }
 
-var SW = new SetWeight();
+var SW = new SetWeight(null, null);
+SW.processing_weight();
+
 
 
 class DrawLine {
@@ -649,7 +715,6 @@ class ConcatLineNodes extends DrawLine {
     this.nodes = Object.values(localStorage);
   }
 
-
   get_existing_localStorage(node){
     return localStorage.getItem(node) ? localStorage.getItem(node).split(",") : [];
   }
@@ -670,13 +735,13 @@ class ConcatLineNodes extends DrawLine {
     localStorage.setItem(pair_nodes_1, existing.toString());
 
     this.draw_line(start_pos, line_coord);
-    return [start_pos, line_coord]
   }
 
   binding(nearest_node){
     this.pair_nodes.push(nearest_node);
     if (this.pair_nodes.length % 2 == 0 && this.pair_nodes[this.pair_nodes.length - 2] == this.pair_nodes[this.pair_nodes.length - 1]) {
-      this.pair_nodes.pop().pop();
+      this.pair_nodes.pop();
+      this.pair_nodes.pop();
     } else if (this.pair_nodes.length % 2 == 0 &&
       this.pair_nodes[this.pair_nodes.length - 2] != this.pair_nodes[this.pair_nodes.length - 1] &&
       document.querySelectorAll("div[data-id='" + this.pair_nodes[this.pair_nodes.length - 1] + "']").length == 1 &&
@@ -693,8 +758,11 @@ class ConcatLineNodes extends DrawLine {
           return;
         }
       }
-      let coord_node = this.Add_binding_localstorage_Draw_line(this.pair_nodes[this.pair_nodes.length - 2], this.pair_nodes[this.pair_nodes.length - 1]);
-      SW.create_weight(coord_node);
+      this.Add_binding_localstorage_Draw_line(this.pair_nodes[this.pair_nodes.length - 2], this.pair_nodes[this.pair_nodes.length - 1]);
+
+      SW = new SetWeight(this.pair_nodes[this.pair_nodes.length - 2], this.pair_nodes[this.pair_nodes.length - 1]);
+      SW.create_weight();
+
       CLN = new ConcatLineNodes(this.pair_nodes);
     }
   }

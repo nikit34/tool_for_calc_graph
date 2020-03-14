@@ -98,8 +98,9 @@ body {
   color: rgb(0, 0, 0);
   line-height: 30px;
   border-radius: 5%;
-  box-shadow: 0px -10px 10px 5px rgba(0,0,0,0.75);
+  box-shadow: 0px -5px 5px 2.5px rgba(0,0,0,0.5);
   background-color: rgba(150, 255, 150, 0.5);
+  z-index: 1;
 }
 
 .exit_popup {
@@ -119,7 +120,7 @@ body {
   line-height: 30px;
   border-radius: 5%;
   background-color: rgba(150, 150, 255, 0.5);
-  box-shadow: 0px -10px 10px 5px rgba(0,0,0,0.75);
+  box-shadow: 0px -5px 5px 2.5px rgba(0,0,0,0.5);
   z-index: 1;
 }
 
@@ -139,6 +140,20 @@ body {
   left: 70px;
 }
 
+.display_weight {
+  position: absolute;
+  width: 40px;
+  height: 30px;
+  text-align: center;
+  font-weight: 600;
+  color: rgb(0, 0, 0);
+  line-height: 30px;
+  border-radius: 5%;
+  box-shadow: 0px -5px 5px 2.5px rgba(0,0,0,0.5);
+  background-color: rgba(150, 150, 150, 0.5);
+  z-index: 1;
+}
+
 .popup_weight {
   position: absolute;
   width: 120px;
@@ -147,7 +162,7 @@ body {
   font-weight: 600;
   line-height: 30px;
   border-radius: 5%;
-  background-color: rgba(150, 150, 255, 0.5);
+  background-color: rgba(100, 100, 100, 0.5);
   z-index: 1;
 }
 
