@@ -2,7 +2,10 @@ html,
 body {
   margin: 0;
   padding: 0;
-  background-color: whitesmoke;
+  background: url(img/fon.jpg) no-repeat;
+  background-size: 100%;
+  font-weight: 600;
+  font-family: 'Courier New', sans-serif;
 }
 
 .container {
@@ -55,9 +58,10 @@ body {
   border: 5px solid rgba(150, 255, 150, 0.8);
 }
 
-#buttonGenerateObjects {
+#inputGenerateObjects {
   width: 150px;
-  font-weight: 600;
+  font-weight: 300;
+  opacity: 0.75;
 }
 
 #clear_localStorage {
@@ -65,18 +69,27 @@ body {
   margin-left: auto;
   margin-right: 0;
 }
+#clear_localStorage:hover {
+  background-color: rgba(255, 150, 150, 0.5);
+}
 
 #field {
-  background-color: rgba(0, 0, 0, 0);
   z-index: 1;
+  transition: 1s;
+}
+
+#field:hover {
+  box-shadow: 0px 2.5px 2.5px 2.5px rgba(0,0,0,0.5);
+  border-radius: 2%;
+  background-color: rgba(0, 0, 0, 0);
 }
 
 #field_line {
-  background-color: white;
   z-index: 0;
   position: absolute;
-  top: 155px;
+  top: 177.5px;
   left: 59px;
+  transition: 1s;
 }
 
 #init_date {
@@ -86,7 +99,8 @@ body {
 
 #title {
   text-align: center;
-  margin: 0% 0% 1% 0%;
+  margin: 0% 0% 0% 0%;
+  font-size: x-large;
 }
 
 .display_popup {
@@ -180,4 +194,39 @@ body {
   height: 23px;
   top: 10px;
   left: 70px;
+}
+
+button.interface {
+  text-decoration: none;
+  outline: none;
+  display: inline-block;
+  margin: 0px 20px;
+  padding: 7.5px 10px;
+  width: 150px;
+  font-weight: 600;
+  position: relative;
+  border: 2px solid rgba(150, 150, 255, 0.5);
+  color: rgb(0, 0, 0);
+  transition: .5s;
+}
+button.interface:after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 100%;
+  margin: auto;
+  border: 2px solid rgba(0,0,0,0);
+  transition: .5s;
+}
+button.interface:hover:after {
+  border-color: rgba(150, 150, 255, 0.5);
+  width: calc(100% - 20px);
+  height: calc(100% + 15px);
+}
+
+button.interface:hover {
+  background-color: rgba(150, 255, 150, 0.5);
 }

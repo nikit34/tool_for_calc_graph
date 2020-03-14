@@ -36,7 +36,7 @@ class TopSetting extends MainPage {
       new BottomPanelTools().create_set_nodes(parseInt(this.get_count_node));
       let reset_value = function() {
         button_input.textContent = "push";
-        button_input.style.backgroundColor = "rgba(0,0,0,0)";
+        button_input.style.backgroundColor = "rgba(150, 255, 150, 0.5)";
         input_val.style.display = "inline";
       };
       setTimeout(reset_value, 500);
