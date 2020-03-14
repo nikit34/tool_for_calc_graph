@@ -150,3 +150,19 @@ body {
   background-color: rgba(150, 150, 255, 0.5);
   z-index: 1;
 }
+
+.weight_input {
+  position: absolute;
+  width: 50px;
+  height: 17px;
+  top: 10px;
+  left: 10px;
+}
+
+.weight_button {
+  position: absolute;
+  width: 42px;
+  height: 23px;
+  top: 10px;
+  left: 70px;
+}

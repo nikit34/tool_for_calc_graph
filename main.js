@@ -548,9 +548,19 @@ class SetWeight {
     let body_canvas = document.getElementById("field");
     let popup_weight = document.createElement("DIV");
     popup_weight.setAttribute("class", "popup_weight");
-    popup_weight.style.top = ((parseInt(coord_node[0].y) + parseInt(coord_node[1].y)) / 2).toString() + "px";
-    popup_weight.style.left = ((parseInt(coord_node[0].x) + parseInt(coord_node[1].x)) / 2).toString() + "px";
+    popup_weight.style.top = ((parseInt(coord_node[0].y) + parseInt(coord_node[1].y)) / 2 + 155).toString() + "px";
+    popup_weight.style.left = ((parseInt(coord_node[0].x) + parseInt(coord_node[1].x)) / 2 + 60).toString() + "px";
     body_canvas.after(popup_weight);
+
+    let weight_input = document.createElement("INPUT");
+    weight_input.setAttribute("class", "weight_input");
+    popup_weight.appendChild(weight_input);
+    weight_input.focus();
+
+    let weight_button = document.createElement("BUTTON");
+    weight_button.setAttribute("class", "weight_button");
+    popup_weight.appendChild(weight_button);
+    weight_button.innerHTML = "save";
   }
 }
 
@@ -633,11 +643,12 @@ DL.start_draw();
 
 
 class ConcatLineNodes extends DrawLine {
-  constructor() {
+  constructor(pair_nodes) {
     super(document.getElementById("field_line"), document.getElementById("field_line").getContext("2d"));
-    this.pair_nodes = [];
+    this.pair_nodes = pair_nodes;
     this.nodes = Object.values(localStorage);
   }
+
 
   get_existing_localStorage(node){
     return localStorage.getItem(node) ? localStorage.getItem(node).split(",") : [];
@@ -647,16 +658,16 @@ class ConcatLineNodes extends DrawLine {
     return { x: parseInt(existing[1]), y: parseInt(existing[2]) };
   }
 
-  Add_binding_localstorage_Draw_line(pair_nodes){
-    let existing = this.get_existing_localStorage(pair_nodes[0]);
+  Add_binding_localstorage_Draw_line(pair_nodes_0, pair_nodes_1){
+    let existing = this.get_existing_localStorage(pair_nodes_0);
     let start_pos = this.get_pos_node(existing);
-    existing.push(pair_nodes[1]);
-    localStorage.setItem(pair_nodes[0], existing.toString());
+    existing.push(pair_nodes_1);
+    localStorage.setItem(pair_nodes_0, existing.toString());
 
-    existing = this.get_existing_localStorage(pair_nodes[1]);
+    existing = this.get_existing_localStorage(pair_nodes_1);
     let line_coord = this.get_pos_node(existing);
-    existing.push(pair_nodes[0]);
-    localStorage.setItem(pair_nodes[1], existing.toString());
+    existing.push(pair_nodes_0);
+    localStorage.setItem(pair_nodes_1, existing.toString());
 
     this.draw_line(start_pos, line_coord);
     return [start_pos, line_coord]
@@ -664,15 +675,27 @@ class ConcatLineNodes extends DrawLine {
 
   binding(nearest_node){
     this.pair_nodes.push(nearest_node);
-    if (this.pair_nodes.length > 2) {
-      this.pair_nodes.shift();
-    }
-    if (this.pair_nodes.length == 2 && this.pair_nodes[0] != this.pair_nodes[1]) {
-      let coord_node = this.Add_binding_localstorage_Draw_line(this.pair_nodes);
+    if (this.pair_nodes.length % 2 == 0 && this.pair_nodes[this.pair_nodes.length - 2] == this.pair_nodes[this.pair_nodes.length - 1]) {
+      this.pair_nodes.pop().pop();
+    } else if (this.pair_nodes.length % 2 == 0 &&
+      this.pair_nodes[this.pair_nodes.length - 2] != this.pair_nodes[this.pair_nodes.length - 1] &&
+      document.querySelectorAll("div[data-id='" + this.pair_nodes[this.pair_nodes.length - 1] + "']").length == 1 &&
+      document.querySelectorAll("div[data-id='" + this.pair_nodes[this.pair_nodes.length - 2] + "']").length == 1
+      ) {
+      for (let i = 0; i < this.pair_nodes.length - 2; i = i + 2) {
+        if ((
+          this.pair_nodes[i] == this.pair_nodes[this.pair_nodes.length - 2] &&
+          this.pair_nodes[i + 1] == this.pair_nodes[this.pair_nodes.length - 1]
+          ) || (
+          this.pair_nodes[i] == this.pair_nodes[this.pair_nodes.length - 1] &&
+          this.pair_nodes[i + 1] == this.pair_nodes[this.pair_nodes.length - 2]
+          )) {
+          return;
+        }
+      }
+      let coord_node = this.Add_binding_localstorage_Draw_line(this.pair_nodes[this.pair_nodes.length - 2], this.pair_nodes[this.pair_nodes.length - 1]);
       SW.create_weight(coord_node);
-      CLN = new ConcatLineNodes();
-    } else if (this.pair_nodes.length == 2 && this.pair_nodes[0] == this.pair_nodes[1]) {
-      this.pair_nodes = []
+      CLN = new ConcatLineNodes(this.pair_nodes);
     }
   }
 
@@ -696,23 +719,26 @@ class ConcatLineNodes extends DrawLine {
 
   check_view_nodes() {
     this.nodes = Object.values(localStorage);
-    for (let i = 0; i != this.nodes.length; i++) {
+    for (let i = 0; i < this.nodes.length; i++) {
       if (localStorage.key(i) != null) {
-        if (document.querySelectorAll("div[data-id='" + localStorage.key(i) + "']").length != 1){
-          localStorage.removeItem(localStorage.key(i));
-          i = 0;
+        if (document.querySelectorAll("div[data-id='" + localStorage.key(i).toString() + "']").length != 1){
+          localStorage.removeItem(localStorage.key(i).toString());
         }
       }
-      this.nodes = Object.values(localStorage);
     }
+    this.nodes = Object.values(localStorage);
   }
 
   get_coord_line(e) {
     this.check_view_nodes();
-    let point_line = this.get_client_offset(e);
-    let nearest_node = this.affiliation(point_line);
-    this.binding(nearest_node);
+    if (this.nodes.length != 0) {
+      let point_line = this.get_client_offset(e);
+      let nearest_node = this.affiliation(point_line);
+      this.binding(nearest_node);
+    } else {
+      this.isDrawStart = true;
+    }
   }
 }
 
-var CLN = new ConcatLineNodes();
+var CLN = new ConcatLineNodes([]);
