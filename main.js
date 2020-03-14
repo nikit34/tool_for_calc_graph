@@ -1,6 +1,5 @@
 "use strict;";
 
-
 class MainPage {
   constructor() {}
 
@@ -48,6 +47,7 @@ class TopSetting extends MainPage {
     }
   }
 }
+
 var TS = new TopSetting(10);
 
 class BottomPanelTools extends MainPage {
@@ -91,7 +91,6 @@ class BottomPanelTools extends MainPage {
       this.get_was_count_node - this.get_now_count_node;
   }
 }
-
 
 class Field extends MainPage {
   constructor() {
@@ -159,7 +158,38 @@ class SetNodes {
     this.offsetY;
   }
 
+  select_nodes_field() {
+    return document.getElementsByClassName("node draggable field");
+  }
+
+  select_nodes_mark() {
+    return document.getElementsByClassName("node draggable field mark");
+  }
+
+  select_nodes_save() {
+    return document.getElementsByClassName("node draggable field mark save");
+  }
+
+  remove_set_nodes() {
+    for (let i = this.select_nodes_save().length - 1; i >= 0; i--) {
+      this.select_nodes_save()[i].remove();
+    }
+    for (let i = this.select_nodes_mark().length - 1; i >= 0; i--) {
+      this.select_nodes_mark()[i].remove();
+    }
+    for (let i = this.select_nodes_field().length - 1; i >= 0; i--) {
+      this.select_nodes_field()[i].remove();
+    }
+    localStorage.clear();
+  }
+
   event_listens() {
+    document.body.addEventListener("click", function(e) {
+      if (e.target.id == "deleted_set_nodes") {
+        SN.remove_set_nodes();
+      }
+    });
+
     document.body.addEventListener("mousedown", function(e) {
       if (e.target.classList.contains("node")) {
         e.preventDefault();
@@ -238,7 +268,6 @@ class SetNodes {
 SN = new SetNodes();
 SN.event_listens();
 
-
 class Data {
   constructor() {}
 
@@ -254,10 +283,6 @@ class Data {
     node.removeAttribute("data-id");
   }
 
-  clear_localStorage() {
-    localStorage.clear();
-  }
-
   save_data(node, value) {
     this.random_num = [];
     var random_value = this.getRandomInt(0, 100);
@@ -270,20 +295,22 @@ class Data {
       this.random_num[this.random_num.length - 1].toString()
     );
     let canvas_elem = document.getElementById("field");
-    let x_node = parseFloat(node.offsetLeft) + parseFloat(node.offsetWidth) / 2 - parseFloat(canvas_elem.offsetLeft);
-    let y_node = parseFloat(node.offsetTop) + parseFloat(node.offsetHeight) / 2 - parseFloat(canvas_elem.offsetTop);
+    let x_node =
+      parseFloat(node.offsetLeft) +
+      parseFloat(node.offsetWidth) / 2 -
+      parseFloat(canvas_elem.offsetLeft);
+    let y_node =
+      parseFloat(node.offsetTop) +
+      parseFloat(node.offsetHeight) / 2 -
+      parseFloat(canvas_elem.offsetTop);
     localStorage.setItem(
-      this.random_num[this.random_num.length - 1].toString(), [
-        value.toString(),
-        (x_node).toString(),
-        (y_node).toString()
-      ]
+      this.random_num[this.random_num.length - 1].toString(),
+      [value.toString(), x_node.toString(), y_node.toString()]
     );
   }
 }
 
 var D = new Data();
-
 
 class PopUp extends Data {
   constructor() {
@@ -365,9 +392,16 @@ class PopUp extends Data {
       elem = elem.parentElement;
     }
     if (display) {
-      for (let i = 0; i < this.select_display_body().length; i++){
+      for (let i = this.select_display_body().length - 1; i >= 0; i--) {
         if (this.select_display_body()[i]) {
-          if (this.select_display_body()[i].parentElement.getAttribute("data-id") == null || (this.select_display_body()[i].parentElement.getAttribute("data-id").toString() == elem.getAttribute("data-id").toString())) {
+          if (
+            this.select_display_body()[i].parentElement.getAttribute(
+              "data-id"
+            ) == null ||
+            this.select_display_body()
+              [i].parentElement.getAttribute("data-id")
+              .toString() == elem.getAttribute("data-id").toString()
+          ) {
             this.select_display_body()[i].parentElement.setAttribute(
               "class",
               "node draggable field mark save"
@@ -379,9 +413,15 @@ class PopUp extends Data {
         }
       }
     } else {
-      for (let i = 0; i < this.select_popup_body().length; i++){
+      for (let i = this.select_popup_body().length - 1; i >= 0; i--) {
         if (this.select_popup_body()[i]) {
-          if (this.select_popup_body()[i].parentElement.getAttribute("data-id") == null || (this.select_popup_body()[i].parentElement.getAttribute("data-id").toString() == elem.getAttribute("data-id").toString())) {
+          if (
+            this.select_popup_body()[i].parentElement.getAttribute("data-id") ==
+              null ||
+            this.select_popup_body()
+              [i].parentElement.getAttribute("data-id")
+              .toString() == elem.getAttribute("data-id").toString()
+          ) {
             this.select_popup_body()[i].parentElement.setAttribute(
               "class",
               "node draggable field"
@@ -485,7 +525,8 @@ class PopUp extends Data {
           this.select_popup_input()[i].value = random_int;
           break;
         } else if (
-          (e.target.className == "popup_body" || e.target.className == "popup_button") &&
+          (e.target.className == "popup_body" ||
+            e.target.className == "popup_button") &&
           !this.select_popup_input()[i].value
         ) {
           this.select_popup_body()[i].style.backgroundColor =
@@ -540,11 +581,14 @@ class PopUp extends Data {
 var PU = new PopUp();
 PU.processing_popup();
 
-
 class SetWeight {
   constructor(node_1, node_2) {
     this.node_1 = node_1;
     this.node_2 = node_2;
+  }
+
+  select_display_weight() {
+    return document.getElementsByClassName("display_weight");
   }
 
   select_popup_weight() {
@@ -559,6 +603,19 @@ class SetWeight {
     return document.getElementsByClassName("weight_input");
   }
 
+  remove_weight() {
+    for (let i = this.select_display_weight().length - 1; i >= 0; i--) {
+      if (this.select_display_weight()[i]) {
+        this.select_display_weight()[i].remove();
+      }
+    }
+    let values = Object.values(localStorage);
+    for (let i = 0; i < localStorage.length; i++) {
+      values[i] = values[i].split(",").slice(0, 3);
+      localStorage.setItem(localStorage.key(i), values[i]);
+    }
+  }
+
   create_weight() {
     let body_canvas = document.getElementById("field");
     let popup_weight = document.createElement("DIV");
@@ -569,8 +626,12 @@ class SetWeight {
     existing = CLN.get_existing_localStorage(this.node_2);
     let line_coord = CLN.get_pos_node(existing);
 
-    popup_weight.style.top = ((parseInt(start_pos.y) + parseInt(line_coord.y)) / 2 + 155).toString() + "px";
-    popup_weight.style.left = ((parseInt(start_pos.x) + parseInt(line_coord.x)) / 2 + 60).toString() + "px";
+    popup_weight.style.top =
+      ((parseInt(start_pos.y) + parseInt(line_coord.y)) / 2 + 155).toString() +
+      "px";
+    popup_weight.style.left =
+      ((parseInt(start_pos.x) + parseInt(line_coord.x)) / 2 + 60).toString() +
+      "px";
     body_canvas.after(popup_weight);
 
     let weight_input = document.createElement("INPUT");
@@ -595,12 +656,16 @@ class SetWeight {
     existing = CLN.get_existing_localStorage(this.node_2);
     let line_coord = CLN.get_pos_node(existing);
 
-    display_weight.style.top = ((parseInt(start_pos.y) + parseInt(line_coord.y)) / 2 + 155).toString() + "px";
-    display_weight.style.left = ((parseInt(start_pos.x) + parseInt(line_coord.x)) / 2 + 60).toString() + "px";
+    display_weight.style.top =
+      ((parseInt(start_pos.y) + parseInt(line_coord.y)) / 2 + 155).toString() +
+      "px";
+    display_weight.style.left =
+      ((parseInt(start_pos.x) + parseInt(line_coord.x)) / 2 + 60).toString() +
+      "px";
     body_canvas.after(display_weight);
   }
 
-  one_click_proc(e){
+  one_click_proc(e) {
     let loop_weight = this.select_popup_weight().length;
     if (loop_weight == 0) {
       loop_weight = 1;
@@ -612,12 +677,18 @@ class SetWeight {
           e.target.parentElement.remove();
           this.create_display_weight(value);
         } else {
-          this.select_popup_weight()[i].style.backgroundColor = "rgba(255, 150, 150, 0.5)";
+          this.select_popup_weight()[i].style.backgroundColor =
+            "rgba(255, 150, 150, 0.5)";
           let random_int = D.getRandomInt(0, 100);
           this.select_weight_input()[i].value = random_int;
         }
         break;
       }
+    }
+    if (e.target.id == "deleted_all_edges") {
+      this.remove_weight();
+      CLN.clear_canvas();
+      CLN.pair_nodes = [];
     }
   }
 
@@ -630,8 +701,6 @@ class SetWeight {
 
 var SW = new SetWeight(null, null);
 SW.processing_weight();
-
-
 
 class DrawLine {
   constructor(canvas_elem, context) {
@@ -646,10 +715,13 @@ class DrawLine {
     let { pageX, pageY } = e.touches ? e.touches[0] : e;
     let x = pageX - this.canvas_elem.offsetLeft;
     let y = pageY - this.canvas_elem.offsetTop;
-    return {x, y};
+    return { x, y };
   }
 
-  draw_line(start_pos = this.start_position, line_coord = this.line_coordinate) {
+  draw_line(
+    start_pos = this.start_position,
+    line_coord = this.line_coordinate
+  ) {
     this.context.beginPath();
     this.context.moveTo(start_pos.x, start_pos.y);
     this.context.lineTo(line_coord.x, line_coord.y);
@@ -677,7 +749,12 @@ class DrawLine {
   }
 
   clear_canvas() {
-    this.context.clearRect(0, 0, this.canvas_elem.width, this.canvas_elem.height);
+    this.context.clearRect(
+      0,
+      0,
+      this.canvas_elem.width,
+      this.canvas_elem.height
+    );
   }
 
   start_draw() {
@@ -704,26 +781,33 @@ class DrawLine {
   }
 }
 
-var DL = new DrawLine(document.getElementById("field"), document.getElementById("field").getContext("2d"));
+var DL = new DrawLine(
+  document.getElementById("field"),
+  document.getElementById("field").getContext("2d")
+);
 DL.start_draw();
-
 
 class ConcatLineNodes extends DrawLine {
   constructor(pair_nodes) {
-    super(document.getElementById("field_line"), document.getElementById("field_line").getContext("2d"));
+    super(
+      document.getElementById("field_line"),
+      document.getElementById("field_line").getContext("2d")
+    );
     this.pair_nodes = pair_nodes;
     this.nodes = Object.values(localStorage);
   }
 
-  get_existing_localStorage(node){
-    return localStorage.getItem(node) ? localStorage.getItem(node).split(",") : [];
+  get_existing_localStorage(node) {
+    return localStorage.getItem(node)
+      ? localStorage.getItem(node).split(",")
+      : [];
   }
 
   get_pos_node(existing) {
     return { x: parseInt(existing[1]), y: parseInt(existing[2]) };
   }
 
-  Add_binding_localstorage_Draw_line(pair_nodes_0, pair_nodes_1){
+  Add_binding_localstorage_Draw_line(pair_nodes_0, pair_nodes_1) {
     let existing = this.get_existing_localStorage(pair_nodes_0);
     let start_pos = this.get_pos_node(existing);
     existing.push(pair_nodes_1);
@@ -737,30 +821,47 @@ class ConcatLineNodes extends DrawLine {
     this.draw_line(start_pos, line_coord);
   }
 
-  binding(nearest_node){
+  binding(nearest_node) {
     this.pair_nodes.push(nearest_node);
-    if (this.pair_nodes.length % 2 == 0 && this.pair_nodes[this.pair_nodes.length - 2] == this.pair_nodes[this.pair_nodes.length - 1]) {
+    if (
+      this.pair_nodes.length % 2 == 0 &&
+      this.pair_nodes[this.pair_nodes.length - 2] ==
+        this.pair_nodes[this.pair_nodes.length - 1]
+    ) {
       this.pair_nodes.pop();
       this.pair_nodes.pop();
-    } else if (this.pair_nodes.length % 2 == 0 &&
-      this.pair_nodes[this.pair_nodes.length - 2] != this.pair_nodes[this.pair_nodes.length - 1] &&
-      document.querySelectorAll("div[data-id='" + this.pair_nodes[this.pair_nodes.length - 1] + "']").length == 1 &&
-      document.querySelectorAll("div[data-id='" + this.pair_nodes[this.pair_nodes.length - 2] + "']").length == 1
-      ) {
+    } else if (
+      this.pair_nodes.length % 2 == 0 &&
+      this.pair_nodes[this.pair_nodes.length - 2] !=
+        this.pair_nodes[this.pair_nodes.length - 1] &&
+      document.querySelectorAll(
+        "div[data-id='" + this.pair_nodes[this.pair_nodes.length - 1] + "']"
+      ).length == 1 &&
+      document.querySelectorAll(
+        "div[data-id='" + this.pair_nodes[this.pair_nodes.length - 2] + "']"
+      ).length == 1
+    ) {
       for (let i = 0; i < this.pair_nodes.length - 2; i = i + 2) {
-        if ((
-          this.pair_nodes[i] == this.pair_nodes[this.pair_nodes.length - 2] &&
-          this.pair_nodes[i + 1] == this.pair_nodes[this.pair_nodes.length - 1]
-          ) || (
-          this.pair_nodes[i] == this.pair_nodes[this.pair_nodes.length - 1] &&
-          this.pair_nodes[i + 1] == this.pair_nodes[this.pair_nodes.length - 2]
-          )) {
+        if (
+          (this.pair_nodes[i] == this.pair_nodes[this.pair_nodes.length - 2] &&
+            this.pair_nodes[i + 1] ==
+              this.pair_nodes[this.pair_nodes.length - 1]) ||
+          (this.pair_nodes[i] == this.pair_nodes[this.pair_nodes.length - 1] &&
+            this.pair_nodes[i + 1] ==
+              this.pair_nodes[this.pair_nodes.length - 2])
+        ) {
           return;
         }
       }
-      this.Add_binding_localstorage_Draw_line(this.pair_nodes[this.pair_nodes.length - 2], this.pair_nodes[this.pair_nodes.length - 1]);
+      this.Add_binding_localstorage_Draw_line(
+        this.pair_nodes[this.pair_nodes.length - 2],
+        this.pair_nodes[this.pair_nodes.length - 1]
+      );
 
-      SW = new SetWeight(this.pair_nodes[this.pair_nodes.length - 2], this.pair_nodes[this.pair_nodes.length - 1]);
+      SW = new SetWeight(
+        this.pair_nodes[this.pair_nodes.length - 2],
+        this.pair_nodes[this.pair_nodes.length - 1]
+      );
       SW.create_weight();
 
       CLN = new ConcatLineNodes(this.pair_nodes);
@@ -769,16 +870,21 @@ class ConcatLineNodes extends DrawLine {
 
   affiliation(point_line) {
     let x_node = 0,
-        y_node = 0;
+      y_node = 0;
     let min_dist = Number.MAX_VALUE;
     let x_line = parseFloat(point_line.x),
-        y_line = parseFloat(point_line.y);
+      y_line = parseFloat(point_line.y);
     let index_min_dist = 0;
     for (let i = 0; i < this.nodes.length; i++) {
       x_node = parseInt(this.nodes[i].split(",")[1]);
       y_node = parseInt(this.nodes[i].split(",")[2]);
-      if (Math.sqrt(Math.pow(x_line - x_node, 2) + Math.pow(y_line - y_node, 2)) < min_dist) {
-        min_dist = Math.sqrt(Math.pow(x_line - x_node, 2) + Math.pow(y_line - y_node, 2));
+      if (
+        Math.sqrt(Math.pow(x_line - x_node, 2) + Math.pow(y_line - y_node, 2)) <
+        min_dist
+      ) {
+        min_dist = Math.sqrt(
+          Math.pow(x_line - x_node, 2) + Math.pow(y_line - y_node, 2)
+        );
         index_min_dist = i;
       }
     }
@@ -787,9 +893,13 @@ class ConcatLineNodes extends DrawLine {
 
   check_view_nodes() {
     this.nodes = Object.values(localStorage);
-    for (let i = 0; i < this.nodes.length; i++) {
+    for (let i = this.nodes.length; i >= 0; i--) {
       if (localStorage.key(i) != null) {
-        if (document.querySelectorAll("div[data-id='" + localStorage.key(i).toString() + "']").length != 1){
+        if (
+          document.querySelectorAll(
+            "div[data-id='" + localStorage.key(i).toString() + "']"
+          ).length != 1
+        ) {
           localStorage.removeItem(localStorage.key(i).toString());
         }
       }

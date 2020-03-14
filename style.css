@@ -5,7 +5,7 @@ body {
   background: url(img/fon.jpg) no-repeat;
   background-size: 100%;
   font-weight: 600;
-  font-family: 'Courier New', sans-serif;
+  font-family: "Courier New", sans-serif;
 }
 
 .container {
@@ -42,7 +42,7 @@ body {
 
 .draggable {
   cursor: pointer;
-  box-shadow: 0 15px 30px rgba(0,0,0,0.5), 0 10px 10px rgba(0,0,0,0.25);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5), 0 10px 10px rgba(0, 0, 0, 0.25);
   margin: 0 !important;
 }
 
@@ -64,12 +64,21 @@ body {
   opacity: 0.75;
 }
 
-#clear_localStorage {
+#deleted_set_nodes {
+  width: 150px;
+  margin-left: 20px;
+  margin-right: 0;
+}
+#deleted_set_nodes:hover {
+  background-color: rgba(255, 150, 150, 0.5);
+}
+
+#deleted_all_edges {
   width: 150px;
   margin-left: auto;
   margin-right: 0;
 }
-#clear_localStorage:hover {
+#deleted_all_edges:hover {
   background-color: rgba(255, 150, 150, 0.5);
 }
 
@@ -79,7 +88,7 @@ body {
 }
 
 #field:hover {
-  box-shadow: 0px 2.5px 2.5px 2.5px rgba(0,0,0,0.5);
+  box-shadow: 0px 2.5px 2.5px 2.5px rgba(0, 0, 0, 0.5);
   border-radius: 2%;
   background-color: rgba(0, 0, 0, 0);
 }
@@ -106,13 +115,13 @@ body {
 .display_popup {
   position: absolute;
   width: 80px;
-  height: 40px;
+  height: 30px;
   text-align: center;
   font-weight: 600;
   color: rgb(0, 0, 0);
   line-height: 30px;
   border-radius: 5%;
-  box-shadow: 0px -5px 5px 2.5px rgba(0,0,0,0.5);
+  box-shadow: 0px -5px 5px 2.5px rgba(0, 0, 0, 0.5);
   background-color: rgba(150, 255, 150, 0.5);
   z-index: 1;
 }
@@ -123,6 +132,7 @@ body {
   position: absolute;
   border-top-right-radius: 25%;
   background-color: rgba(255, 150, 150, 0.5);
+  z-index: 2;
 }
 
 .popup_body {
@@ -134,7 +144,7 @@ body {
   line-height: 30px;
   border-radius: 5%;
   background-color: rgba(150, 150, 255, 0.5);
-  box-shadow: 0px -5px 5px 2.5px rgba(0,0,0,0.5);
+  box-shadow: 0px -5px 5px 2.5px rgba(0, 0, 0, 0.5);
   z-index: 1;
 }
 
@@ -157,15 +167,15 @@ body {
 .display_weight {
   position: absolute;
   width: 40px;
-  height: 30px;
+  height: 25px;
   text-align: center;
   font-weight: 600;
   color: rgb(0, 0, 0);
   line-height: 30px;
   border-radius: 5%;
-  box-shadow: 0px -5px 5px 2.5px rgba(0,0,0,0.5);
+  box-shadow: 0px -5px 5px 2.5px rgba(0, 0, 0, 0.5);
   background-color: rgba(150, 150, 150, 0.5);
-  z-index: 1;
+  z-index: 2;
 }
 
 .popup_weight {
@@ -177,7 +187,7 @@ body {
   line-height: 30px;
   border-radius: 5%;
   background-color: rgba(100, 100, 100, 0.5);
-  z-index: 1;
+  z-index: 2;
 }
 
 .weight_input {
@@ -207,7 +217,7 @@ button.interface {
   position: relative;
   border: 2px solid rgba(150, 150, 255, 0.5);
   color: rgb(0, 0, 0);
-  transition: .5s;
+  transition: 0.5s;
 }
 button.interface:after {
   content: "";
@@ -218,8 +228,8 @@ button.interface:after {
   bottom: 0;
   height: 100%;
   margin: auto;
-  border: 2px solid rgba(0,0,0,0);
-  transition: .5s;
+  border: 2px solid rgba(0, 0, 0, 0);
+  transition: 0.5s;
 }
 button.interface:hover:after {
   border-color: rgba(150, 150, 255, 0.5);
