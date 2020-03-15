@@ -61,11 +61,10 @@ body {
 #inputGenerateObjects {
   width: 150px;
   font-weight: 300;
-  opacity: 0.75;
+  opacity: 0.5;
 }
 
 #deleted_set_nodes {
-  width: 150px;
   margin-left: 20px;
   margin-right: 0;
 }
@@ -74,7 +73,6 @@ body {
 }
 
 #deleted_all_edges {
-  width: 150px;
   margin-left: auto;
   margin-right: 0;
 }
@@ -239,4 +237,47 @@ button.interface:hover:after {
 
 button.interface:hover {
   background-color: rgba(150, 255, 150, 0.5);
+}
+
+
+#buttonStartСalc {
+  height:120%;
+  min-width: 150px;
+}
+#buttonStartСalc:hover:after {
+  height: calc(100% - 15px);
+  background-color: rgba(150, 150, 255, 0.5);
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+  margin-left: auto;
+  margin-right: 0;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: rgb(220, 220, 220);
+  min-width: 175px;
+  text-align: center;
+  overflow: auto;
+  box-shadow: 0px 10px 20px 0px rgba(0, 0, 0, 0.5);
+  z-index: 3;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 15px 20px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown a:hover {
+  background-color: rgba(150, 150, 255, 0.5);
+}
+
+.show {
+  display: block;
 }

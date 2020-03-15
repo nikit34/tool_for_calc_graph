@@ -46,9 +46,38 @@ class TopSetting extends MainPage {
       input_val.setAttribute("type", "number");
     }
   }
+
+  handler_start() {
+    document.body.addEventListener("click", function(e){
+      if (e.target.id == "buttonGenerateObjects") {
+        TS.showInputGenerateObjects();
+      }
+      if (e.target.id == "buttonStartСalc") {
+        document.getElementById("start_dropdown").classList.toggle("show");
+      }
+      if (e.target.id == "dinitsa"){
+        A.start_calc();
+      } else if (e.target.id == "preflow_flow"){
+
+      } else if (e.target.id == "line_prog"){
+
+      }
+
+      if (e.target.parentElement.id == "start_dropdown" && !e.target.matches(".interface")) {
+        let dropdowns = document.getElementsByClassName("dropdown-content");
+        for (let i = 0; i < dropdowns.length; i++) {
+          if (dropdowns[i].classList.contains('show')) {
+            dropdowns[i].classList.remove('show');
+          }
+        }
+      }
+
+    });
+  }
 }
 
 var TS = new TopSetting(10);
+TS.handler_start()
 
 class BottomPanelTools extends MainPage {
   constructor() {
@@ -74,7 +103,7 @@ class BottomPanelTools extends MainPage {
     for (let i = was_count_nodes; i < need_count_nodes; i++) {
       new_div = document.createElement("DIV");
       new_div.setAttribute("class", "node");
-      if (i != 0 && i % 10 == 0) {
+      if (i != 0 && i % count_node == 0) {
         new_br = document.createElement("BR");
         old_p.after(new_br);
         new_p = document.createElement("P");
@@ -82,7 +111,7 @@ class BottomPanelTools extends MainPage {
         new_br.after(new_p);
         new_p.after(new_div);
       }
-      old_p.after(new_div);
+      old_p.appendChild(new_div);
     }
     document.getElementById(
       "show_total_count_nodes"
@@ -665,6 +694,15 @@ class SetWeight {
     body_canvas.after(display_weight);
   }
 
+  save_weight(value) {
+    let existing_node_1 = CLN.get_existing_localStorage(this.node_1);
+    existing_node_1.push(value);
+    localStorage.setItem(this.node_1, existing_node_1.toString());
+    let existing_node_2 = CLN.get_existing_localStorage(this.node_2);
+    existing_node_2.push(value);
+    localStorage.setItem(this.node_2, existing_node_2.toString());
+  }
+
   one_click_proc(e) {
     let loop_weight = this.select_popup_weight().length;
     if (loop_weight == 0) {
@@ -676,6 +714,7 @@ class SetWeight {
           let value = this.select_weight_input()[i].value;
           e.target.parentElement.remove();
           this.create_display_weight(value);
+          this.save_weight(value);
         } else {
           this.select_popup_weight()[i].style.backgroundColor =
             "rgba(255, 150, 150, 0.5)";
@@ -853,6 +892,7 @@ class ConcatLineNodes extends DrawLine {
           return;
         }
       }
+
       this.Add_binding_localstorage_Draw_line(
         this.pair_nodes[this.pair_nodes.length - 2],
         this.pair_nodes[this.pair_nodes.length - 1]
@@ -920,3 +960,23 @@ class ConcatLineNodes extends DrawLine {
 }
 
 var CLN = new ConcatLineNodes([]);
+
+
+class Algorithm {
+  constructor () {}
+
+  get get_keys_id() {
+    return Object.keys(localStorage);
+  }
+
+  get get_values(){
+    return Object.values(localStorage);
+  }
+
+  start_calc() {
+    console.log(this.get_keys_id);
+    console.log(this.get_values);
+  }
+}
+
+var A = new Algorithm();
