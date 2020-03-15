@@ -1019,27 +1019,55 @@ var CLN = new ConcatLineNodes([]);
 class Algorithm {
   constructor() { }
 
-  get get_keys_id() {
+  get get_keys_id_localStorage() {
     return Object.keys(localStorage);
   }
 
-  get get_values() {
+  get get_values_localStorage() {
     return Object.values(localStorage);
   }
 
-  preflow_flow() {
-    let parse_weight_1, parse_weight_2, tmp;
-    for (let i = 0; i < this.get_keys_id.length - 1; i++) {
-      parse_weight_1 = this.get_values[i].split("-").split(",")[
-        this.get_values[i].length - 1
-      ];
-      for (let j = i + 1; j < this.get_keys_id.length; j++) {
-        parse_weight_2 = this.get_values[j].split("-").split(",")[this.get_values[j].length - 1];
-        if (parse_weight_1 > parse_weight_2) {
-          tmp = this.get_values[i];
-          this.get_values[i] = this.get_values[j];
-          this.get_values[j] = tmp;
+  get get_keys_id_sessionStorage() {
+    return Object.keys(sessionStorage);
+  }
+
+  get get_values_sessionStorage() {
+    return Object.values(sessionStorage);
+  }
+
+  pumping_sessionStorage(choice_columns, follow){
+    sessionStorage.clear();
+    if (!Array.isArray(choice_columns)) {
+      choice_columns = [choice_columns]
+    }
+    let formed_row;
+    for (let i = 0; i < this.get_keys_id_localStorage.length; i++) {
+      if (follow == false){
+        formed_row = []
+        for (let j = 0; j < choice_columns.length; j++){
+          formed_row.push(this.get_values_localStorage[i].split(",")[choice_columns[j]])
         }
+        sessionStorage.setItem(this.get_keys_id_localStorage[i], formed_row);
+      } else {
+        formed_row = []
+        for (let j = 0; j < choice_columns.length; j++){
+          formed_row.push(this.get_values_localStorage[i].split(",")[choice_columns[j]])
+        }
+        for (let j = choice_columns[choice_columns.length - 1] + 1; j < this.get_values_localStorage[i].split(",").length; j++){
+          formed_row.push(this.get_values_localStorage[i].split(",")[j])
+        }
+        sessionStorage.setItem(this.get_keys_id_localStorage[i], formed_row);
+      }
+    }
+  }
+
+  preflow_flow() {
+    this.pumping_sessionStorage(3, true);
+    let max_weight_one_node, parse_weight_1, parse_weight_2, tmp;
+    for (let i = 0; i < this.get_keys_id_sessionStorage.length; i++) {
+      max_weight_one_node = Number.MIN_VALUE;
+      for (let j = 3; j < this.get_values_sessionStorage[i].length - 1; j = j + 2) {
+
       }
     }
   }
