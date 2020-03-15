@@ -678,13 +678,13 @@ class SetWeight {
     let weight_input_1 = document.createElement("INPUT");
     weight_input_1.setAttribute("class", "weight_input_1");
     popup_weight.appendChild(weight_input_1);
-    weight_input_1.defaultValue = "to...";
+    weight_input_1.defaultValue = "from...";
     weight_input_1.focus();
 
     let weight_input_2 = document.createElement("INPUT");
     weight_input_2.setAttribute("class", "weight_input_2");
     popup_weight.appendChild(weight_input_2);
-    weight_input_2.defaultValue = "from...";
+    weight_input_2.defaultValue = "to...";
 
     let weight_button = document.createElement("BUTTON");
     weight_button.setAttribute("class", "weight_button");
@@ -739,7 +739,7 @@ class SetWeight {
           this.save_weight(value_1, value_2);
         } else if (
           Number.isInteger(parseInt(SW.select_weight_input_1()[i].value)) &&
-          SW.select_weight_input_2()[i].value == "from..."
+          SW.select_weight_input_2()[i].value == "to..."
         ) {
           let value_1 = this.select_weight_input_1()[i].value;
           let value_2 = "0";
@@ -747,7 +747,7 @@ class SetWeight {
           this.create_display_weight(value_1, value_2);
           this.save_weight(value_1, value_2);
         } else if (
-          SW.select_weight_input_1()[i].value == "to..." &&
+          SW.select_weight_input_1()[i].value == "from..." &&
           Number.isInteger(parseInt(SW.select_weight_input_2()[i].value))
         ) {
           let value_1 = "0";
@@ -756,8 +756,8 @@ class SetWeight {
           this.create_display_weight(value_1, value_2);
           this.save_weight(value_1, value_2);
         } else if (
-          SW.select_weight_input_1()[i].value == "to..." &&
-          SW.select_weight_input_2()[i].value == "from..."
+          SW.select_weight_input_1()[i].value == "from..." &&
+          SW.select_weight_input_2()[i].value == "to..."
         ) {
           let value_1 = "0";
           let value_2 = "0";
