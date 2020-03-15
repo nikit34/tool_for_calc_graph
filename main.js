@@ -56,11 +56,11 @@ class TopSetting extends MainPage {
         document.getElementById("start_dropdown").classList.toggle("show");
       }
       if (e.target.id == "dinitsa"){
-        A.start_calc();
+        console.log(1);
       } else if (e.target.id == "preflow_flow"){
-
+        A.preflow_flow();
       } else if (e.target.id == "line_prog"){
-
+        console.log(3);
       }
 
       if (e.target.parentElement.id == "start_dropdown" && !e.target.matches(".interface")) {
@@ -72,6 +72,9 @@ class TopSetting extends MainPage {
         }
       }
 
+      if (e.target.id == "inputGenerateObjects") {
+        e.target.defaultValue = "";
+      }
     });
   }
 }
@@ -310,6 +313,7 @@ class Data {
     node.textContent = "";
     localStorage.removeItem(node.getAttribute("data-id"));
     node.removeAttribute("data-id");
+    node.removeAttribute("data-weight");
   }
 
   save_data(node, value) {
@@ -322,6 +326,10 @@ class Data {
     node.setAttribute(
       "data-id",
       this.random_num[this.random_num.length - 1].toString()
+    );
+    node.setAttribute(
+      "data-weight",
+      value.toString()
     );
     let canvas_elem = document.getElementById("field");
     let x_node =
@@ -371,11 +379,11 @@ class PopUp extends Data {
     let display_popup = document.createElement("DIV");
 
     if (value != null) {
-      node.textContent = parseInt(value).toString();
+      display_popup.textContent = "Wt:" + parseInt(value).toString();
     }
     for (let key of Object.keys(localStorage)) {
       if (key.toString() == node.dataset.id.toString()) {
-        display_popup.textContent = "key: " + key;
+        node.textContent = key;
         break;
       }
     }
@@ -404,7 +412,7 @@ class PopUp extends Data {
     popup_exit.style.left =
       (
         parseFloat(display_popup.offsetWidth) -
-        2 * parseFloat(popup_exit.offsetWidth)
+        2 * parseFloat(popup_exit.offsetWidth) + 5
       ).toString() + "px";
 
     for (let i = 0; i < this.select_display_body().length; i++) {
@@ -580,7 +588,7 @@ class PopUp extends Data {
           this.select_popup_body()[i] == null &&
           e.target.children.length == 0
         ) {
-          this.create_display_popup(e.target, null);
+          this.create_display_popup(e.target, e.target.dataset.weight);
           break;
         } else if (
           e.target.className == "exit_popup" &&
@@ -628,8 +636,12 @@ class SetWeight {
     return document.getElementsByClassName("weight_button");
   }
 
-  select_weight_input() {
-    return document.getElementsByClassName("weight_input");
+  select_weight_input_1() {
+    return document.getElementsByClassName("weight_input_1");
+  }
+
+  select_weight_input_2() {
+    return document.getElementsByClassName("weight_input_2");
   }
 
   remove_weight() {
@@ -663,10 +675,16 @@ class SetWeight {
       "px";
     body_canvas.after(popup_weight);
 
-    let weight_input = document.createElement("INPUT");
-    weight_input.setAttribute("class", "weight_input");
-    popup_weight.appendChild(weight_input);
-    weight_input.focus();
+    let weight_input_1 = document.createElement("INPUT");
+    weight_input_1.setAttribute("class", "weight_input_1");
+    popup_weight.appendChild(weight_input_1);
+    weight_input_1.defaultValue = "to...";
+    weight_input_1.focus();
+
+    let weight_input_2 = document.createElement("INPUT");
+    weight_input_2.setAttribute("class", "weight_input_2");
+    popup_weight.appendChild(weight_input_2);
+    weight_input_2.defaultValue = "from...";
 
     let weight_button = document.createElement("BUTTON");
     weight_button.setAttribute("class", "weight_button");
@@ -674,10 +692,10 @@ class SetWeight {
     weight_button.innerHTML = "save";
   }
 
-  create_display_weight(value) {
+  create_display_weight(value_1, value_2) {
     let body_canvas = document.getElementById("field");
     let display_weight = document.createElement("DIV");
-    display_weight.textContent = value;
+    display_weight.textContent = this.node_1 + ": " + value_1 + ", " + this.node_2 + ": " + value_2;
     display_weight.setAttribute("class", "display_weight");
 
     let existing = CLN.get_existing_localStorage(this.node_1);
@@ -689,17 +707,17 @@ class SetWeight {
       ((parseInt(start_pos.y) + parseInt(line_coord.y)) / 2 + 155).toString() +
       "px";
     display_weight.style.left =
-      ((parseInt(start_pos.x) + parseInt(line_coord.x)) / 2 + 60).toString() +
+      ((parseInt(start_pos.x) + parseInt(line_coord.x)) / 2).toString() +
       "px";
     body_canvas.after(display_weight);
   }
 
-  save_weight(value) {
+  save_weight(value_1, value_2) {
     let existing_node_1 = CLN.get_existing_localStorage(this.node_1);
-    existing_node_1.push(value);
+    existing_node_1.push(value_1);
     localStorage.setItem(this.node_1, existing_node_1.toString());
     let existing_node_2 = CLN.get_existing_localStorage(this.node_2);
-    existing_node_2.push(value);
+    existing_node_2.push(value_2);
     localStorage.setItem(this.node_2, existing_node_2.toString());
   }
 
@@ -710,18 +728,54 @@ class SetWeight {
     }
     for (let i = 0; i < loop_weight; i++) {
       if (e.target.className == "weight_button") {
-        if (Number.isInteger(parseInt(SW.select_weight_input()[i].value))) {
-          let value = this.select_weight_input()[i].value;
+        if (
+        Number.isInteger(parseInt(SW.select_weight_input_1()[i].value)) &&
+        Number.isInteger(parseInt(SW.select_weight_input_2()[i].value))
+        ) {
+          let value_1 = this.select_weight_input_1()[i].value;
+          let value_2 = this.select_weight_input_2()[i].value;
           e.target.parentElement.remove();
-          this.create_display_weight(value);
-          this.save_weight(value);
-        } else {
+          this.create_display_weight(value_1, value_2);
+          this.save_weight(value_1, value_2);
+        } else if (
+          Number.isInteger(parseInt(SW.select_weight_input_1()[i].value)) &&
+          SW.select_weight_input_2()[i].value == "from..."
+        ) {
+          let value_1 = this.select_weight_input_1()[i].value;
+          let value_2 = "0";
+          e.target.parentElement.remove();
+          this.create_display_weight(value_1, value_2);
+          this.save_weight(value_1, value_2);
+        } else if (
+          SW.select_weight_input_1()[i].value == "to..." &&
+        Number.isInteger(parseInt(SW.select_weight_input_2()[i].value))
+        ) {
+          let value_1 = "0";
+          let value_2 = this.select_weight_input_2()[i].value;
+          e.target.parentElement.remove();
+          this.create_display_weight(value_1, value_2);
+          this.save_weight(value_1, value_2);
+        } else if (
+            SW.select_weight_input_1()[i].value == "to..." &&
+            SW.select_weight_input_2()[i].value == "from..."
+            ) {
+              let value_1 = "0";
+              let value_2 = "0";
+              e.target.parentElement.remove();
+              this.create_display_weight(value_1, value_2);
+              this.save_weight(value_1, value_2);
+            } else {
           this.select_popup_weight()[i].style.backgroundColor =
             "rgba(255, 150, 150, 0.5)";
           let random_int = D.getRandomInt(0, 100);
-          this.select_weight_input()[i].value = random_int;
+          this.select_weight_input_1()[i].value = random_int;
+          random_int = D.getRandomInt(0, 100);
+          this.select_weight_input_2()[i].value = random_int;
         }
         break;
+      } else if (e.target.className == "weight_input_1" || e.target.className == "weight_input_2") {
+        e.target.defaultValue = "";
+        e.target.focus();
       }
     }
     if (e.target.id == "deleted_all_edges") {
@@ -973,9 +1027,19 @@ class Algorithm {
     return Object.values(localStorage);
   }
 
-  start_calc() {
-    console.log(this.get_keys_id);
-    console.log(this.get_values);
+  preflow_flow() {
+    let parse_weight_1, parse_weight_2, tmp;
+    for (let i = 0; i < this.get_keys_id.length - 1; i++) {
+      parse_weight_1 = get_values[i].split("-").split(",")[get_values[i].length-1];
+      for (let j = i + 1; j < this.get_keys_id.length; j++) {
+        parse_weight_2 = get_values[j].split("-").split(",")[get_values[j].length-1];
+        if (parse_weight_1 > parse_weight_2) {
+          tmp = get_values[i];
+          get_values[i] = get_values[j];
+          get_values[j] = tmp;
+        }
+      }
+    }
   }
 }
 

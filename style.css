@@ -112,14 +112,15 @@ body {
 
 .display_popup {
   position: absolute;
-  width: 80px;
-  height: 30px;
+  width: 70px;
+  height: 22.5px;
   text-align: center;
   font-weight: 600;
+  font-size: small;
   color: rgb(0, 0, 0);
-  line-height: 30px;
+  line-height: 25px;
   border-radius: 5%;
-  box-shadow: 0px -5px 5px 2.5px rgba(0, 0, 0, 0.5);
+  box-shadow: 0px -1px 5px 2.5px rgba(0, 0, 0, 0.5);
   background-color: rgba(150, 255, 150, 0.5);
   z-index: 1;
 }
@@ -164,21 +165,22 @@ body {
 
 .display_weight {
   position: absolute;
-  width: 40px;
-  height: 25px;
+  width: 120px;
+  height: 20px;
   text-align: center;
   font-weight: 600;
+  font-size: small;
   color: rgb(0, 0, 0);
-  line-height: 30px;
+  line-height: 20px;
   border-radius: 5%;
-  box-shadow: 0px -5px 5px 2.5px rgba(0, 0, 0, 0.5);
+  box-shadow: 0px -1px 5px 2.5px rgba(0, 0, 0, 0.5);
   background-color: rgba(150, 150, 150, 0.5);
   z-index: 2;
 }
 
 .popup_weight {
   position: absolute;
-  width: 120px;
+  width: 165px;
   height: 40px;
   text-align: center;
   font-weight: 600;
@@ -188,20 +190,28 @@ body {
   z-index: 2;
 }
 
-.weight_input {
+.weight_input_1 {
   position: absolute;
-  width: 50px;
+  width: 40px;
   height: 17px;
   top: 10px;
   left: 10px;
 }
 
+.weight_input_2 {
+  position: absolute;
+  width: 40px;
+  height: 17px;
+  top: 10px;
+  left: 110px;
+}
+
 .weight_button {
   position: absolute;
-  width: 42px;
+  width: 45px;
   height: 23px;
   top: 10px;
-  left: 70px;
+  left: 60px;
 }
 
 button.interface {
@@ -283,4 +293,15 @@ button.interface:hover {
 
 .show {
   display: block;
+}
+
+textarea {
+  width: 1450px;
+  height: 300px;
+  transition: 1s;
+  background: rgba(150, 150, 150, 0.5);
+}
+
+textarea:hover {
+  background: rgb(220, 220, 220);
 }
