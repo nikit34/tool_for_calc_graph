@@ -245,7 +245,10 @@ button.interface:hover {
   min-width: 150px;
 }
 #buttonStartСalc:hover:after {
-  height: calc(100% - 15px);
+  height: calc(100% - 5px);
+  top: calc(45px);
+  width: calc(100% + 45px);
+  left: calc(-25px);
   background-color: rgba(150, 150, 255, 0.5);
 }
 
