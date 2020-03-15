@@ -116,7 +116,7 @@ body {
 
 .display_popup {
   position: absolute;
-  width: 70px;
+  width: 60px;
   height: 22.5px;
   text-align: center;
   font-weight: 600;
@@ -169,7 +169,7 @@ body {
 
 .display_weight {
   position: absolute;
-  width: 120px;
+  width: 140px;
   height: 20px;
   text-align: center;
   font-weight: 600;
@@ -253,9 +253,8 @@ button.interface:hover {
   background-color: rgba(150, 255, 150, 0.5);
 }
 
-
 #buttonStartСalc {
-  height:120%;
+  height: 120%;
   min-width: 150px;
 }
 #buttonStartСalc:hover:after {

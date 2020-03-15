@@ -1,7 +1,7 @@
 "use strict;";
 
 class MainPage {
-  constructor() {}
+  constructor() { }
 
   get get_was_count_node() {
     return document.getElementsByClassName("node").length;
@@ -33,7 +33,7 @@ class TopSetting extends MainPage {
       input_val.style.display = "none";
       button_input.textContent = "append";
       new BottomPanelTools().create_set_nodes(parseInt(this.get_count_node));
-      let reset_value = function() {
+      let reset_value = function () {
         button_input.textContent = "push";
         button_input.style.backgroundColor = "rgba(150, 255, 150, 0.5)";
         input_val.style.display = "inline";
@@ -48,18 +48,18 @@ class TopSetting extends MainPage {
   }
 
   handler_start() {
-    document.body.addEventListener("click", function(e){
+    document.body.addEventListener("click", function (e) {
       if (e.target.id == "buttonGenerateObjects") {
         TS.showInputGenerateObjects();
       }
       if (e.target.id == "buttonStartСalc") {
         document.getElementById("start_dropdown").classList.toggle("show");
       }
-      if (e.target.id == "dinitsa"){
+      if (e.target.id == "dinitsa") {
         console.log(1);
-      } else if (e.target.id == "preflow_flow"){
+      } else if (e.target.id == "preflow_flow") {
         A.preflow_flow();
-      } else if (e.target.id == "line_prog"){
+      } else if (e.target.id == "line_prog") {
         console.log(3);
       }
 
@@ -216,13 +216,13 @@ class SetNodes {
   }
 
   event_listens() {
-    document.body.addEventListener("click", function(e) {
+    document.body.addEventListener("click", function (e) {
       if (e.target.id == "deleted_set_nodes") {
         SN.remove_set_nodes();
       }
     });
 
-    document.body.addEventListener("mousedown", function(e) {
+    document.body.addEventListener("mousedown", function (e) {
       if (e.target.classList.contains("node")) {
         e.preventDefault();
         e.target.setAttribute("class", "node draggable");
@@ -239,13 +239,13 @@ class SetNodes {
           this.offsetX,
           this.offsetY
         );
-        this.itemElement.ondragstart = function(e) {
+        this.itemElement.ondragstart = function (e) {
           return false;
         };
       }
     });
 
-    document.body.addEventListener("mousemove", function(e) {
+    document.body.addEventListener("mousemove", function (e) {
       if (!this.itemMove) return false;
       if (e.buttons != 1 || this.itemElement.hasAttribute("data-id")) {
         this.itemMove = false;
@@ -261,7 +261,7 @@ class SetNodes {
       return false;
     });
 
-    document.body.addEventListener("mouseup", function(e) {
+    document.body.addEventListener("mouseup", function (e) {
       if (this.itemMove) this.itemMove = false;
       if (
         F.rect_border_field.left < e.x &&
@@ -301,7 +301,7 @@ SN = new SetNodes();
 SN.event_listens();
 
 class Data {
-  constructor() {}
+  constructor() { }
 
   getRandomInt(min, max) {
     min = Math.ceil(min);
@@ -392,7 +392,7 @@ class PopUp extends Data {
     node.appendChild(display_popup);
     display_popup.style.top =
       (
-        10 -parseFloat(node.offsetHeight) -
+        10 - parseFloat(node.offsetHeight) -
         parseFloat(display_popup.offsetHeight) / 2
       ).toString() + "px";
     display_popup.style.left =
@@ -406,13 +406,13 @@ class PopUp extends Data {
     node.appendChild(popup_exit);
     popup_exit.style.top =
       (
-        10 -parseFloat(node.offsetHeight) -
+        10 - parseFloat(node.offsetHeight) -
         parseFloat(display_popup.offsetHeight) / 2
       ).toString() + "px";
     popup_exit.style.left =
       (
         parseFloat(display_popup.offsetWidth) -
-        2 * parseFloat(popup_exit.offsetWidth) + 5
+        2 * parseFloat(popup_exit.offsetWidth) + 10
       ).toString() + "px";
 
     for (let i = 0; i < this.select_display_body().length; i++) {
@@ -436,7 +436,7 @@ class PopUp extends Data {
               "data-id"
             ) == null ||
             this.select_display_body()
-              [i].parentElement.getAttribute("data-id")
+            [i].parentElement.getAttribute("data-id")
               .toString() == elem.getAttribute("data-id").toString()
           ) {
             this.select_display_body()[i].parentElement.setAttribute(
@@ -454,9 +454,9 @@ class PopUp extends Data {
         if (this.select_popup_body()[i]) {
           if (
             this.select_popup_body()[i].parentElement.getAttribute("data-id") ==
-              null ||
+            null ||
             this.select_popup_body()
-              [i].parentElement.getAttribute("data-id")
+            [i].parentElement.getAttribute("data-id")
               .toString() == elem.getAttribute("data-id").toString()
           ) {
             this.select_popup_body()[i].parentElement.setAttribute(
@@ -606,10 +606,10 @@ class PopUp extends Data {
   }
 
   processing_popup() {
-    document.body.addEventListener("dblclick", function(e) {
+    document.body.addEventListener("dblclick", function (e) {
       PU.double_click_proc(e);
     });
-    document.body.addEventListener("click", function(e) {
+    document.body.addEventListener("click", function (e) {
       PU.one_click_proc(e);
     });
   }
@@ -695,7 +695,7 @@ class SetWeight {
   create_display_weight(value_1, value_2) {
     let body_canvas = document.getElementById("field");
     let display_weight = document.createElement("DIV");
-    display_weight.textContent = this.node_1 + ": " + value_1 + ", " + this.node_2 + ": " + value_2;
+    display_weight.textContent = this.node_1 + ": " + value_1 + " -> " + this.node_2 + ": " + value_2;
     display_weight.setAttribute("class", "display_weight");
 
     let existing = CLN.get_existing_localStorage(this.node_1);
@@ -729,8 +729,8 @@ class SetWeight {
     for (let i = 0; i < loop_weight; i++) {
       if (e.target.className == "weight_button") {
         if (
-        Number.isInteger(parseInt(SW.select_weight_input_1()[i].value)) &&
-        Number.isInteger(parseInt(SW.select_weight_input_2()[i].value))
+          Number.isInteger(parseInt(SW.select_weight_input_1()[i].value)) &&
+          Number.isInteger(parseInt(SW.select_weight_input_2()[i].value))
         ) {
           let value_1 = this.select_weight_input_1()[i].value;
           let value_2 = this.select_weight_input_2()[i].value;
@@ -748,7 +748,7 @@ class SetWeight {
           this.save_weight(value_1, value_2);
         } else if (
           SW.select_weight_input_1()[i].value == "to..." &&
-        Number.isInteger(parseInt(SW.select_weight_input_2()[i].value))
+          Number.isInteger(parseInt(SW.select_weight_input_2()[i].value))
         ) {
           let value_1 = "0";
           let value_2 = this.select_weight_input_2()[i].value;
@@ -756,15 +756,15 @@ class SetWeight {
           this.create_display_weight(value_1, value_2);
           this.save_weight(value_1, value_2);
         } else if (
-            SW.select_weight_input_1()[i].value == "to..." &&
-            SW.select_weight_input_2()[i].value == "from..."
-            ) {
-              let value_1 = "0";
-              let value_2 = "0";
-              e.target.parentElement.remove();
-              this.create_display_weight(value_1, value_2);
-              this.save_weight(value_1, value_2);
-            } else {
+          SW.select_weight_input_1()[i].value == "to..." &&
+          SW.select_weight_input_2()[i].value == "from..."
+        ) {
+          let value_1 = "0";
+          let value_2 = "0";
+          e.target.parentElement.remove();
+          this.create_display_weight(value_1, value_2);
+          this.save_weight(value_1, value_2);
+        } else {
           this.select_popup_weight()[i].style.backgroundColor =
             "rgba(255, 150, 150, 0.5)";
           let random_int = D.getRandomInt(0, 100);
@@ -786,7 +786,7 @@ class SetWeight {
   }
 
   processing_weight() {
-    document.body.addEventListener("click", function(e) {
+    document.body.addEventListener("click", function (e) {
       SW.one_click_proc(e);
     });
   }
@@ -851,24 +851,24 @@ class DrawLine {
   }
 
   start_draw() {
-    this.canvas_elem.addEventListener("mousedown", function(e) {
+    this.canvas_elem.addEventListener("mousedown", function (e) {
       DL.mouse_down_listener(e);
       CLN.get_coord_line(e);
     });
-    this.canvas_elem.addEventListener("mousemove", function(e) {
+    this.canvas_elem.addEventListener("mousemove", function (e) {
       DL.mouse_move_listener(e);
     });
-    this.canvas_elem.addEventListener("mouseup", function(e) {
+    this.canvas_elem.addEventListener("mouseup", function (e) {
       DL.mouse_up_listener(e);
       CLN.get_coord_line(e);
     });
-    this.canvas_elem.addEventListener("touchstart", function(e) {
+    this.canvas_elem.addEventListener("touchstart", function (e) {
       DL.mouse_down_listener(e);
     });
-    this.canvas_elem.addEventListener("touchmove", function(e) {
+    this.canvas_elem.addEventListener("touchmove", function (e) {
       DL.mouse_move_listener(e);
     });
-    this.canvas_elem.addEventListener("touchend", function(e) {
+    this.canvas_elem.addEventListener("touchend", function (e) {
       DL.mouse_up_listener(e);
     });
   }
@@ -919,14 +919,14 @@ class ConcatLineNodes extends DrawLine {
     if (
       this.pair_nodes.length % 2 == 0 &&
       this.pair_nodes[this.pair_nodes.length - 2] ==
-        this.pair_nodes[this.pair_nodes.length - 1]
+      this.pair_nodes[this.pair_nodes.length - 1]
     ) {
       this.pair_nodes.pop();
       this.pair_nodes.pop();
     } else if (
       this.pair_nodes.length % 2 == 0 &&
       this.pair_nodes[this.pair_nodes.length - 2] !=
-        this.pair_nodes[this.pair_nodes.length - 1] &&
+      this.pair_nodes[this.pair_nodes.length - 1] &&
       document.querySelectorAll(
         "div[data-id='" + this.pair_nodes[this.pair_nodes.length - 1] + "']"
       ).length == 1 &&
@@ -938,10 +938,10 @@ class ConcatLineNodes extends DrawLine {
         if (
           (this.pair_nodes[i] == this.pair_nodes[this.pair_nodes.length - 2] &&
             this.pair_nodes[i + 1] ==
-              this.pair_nodes[this.pair_nodes.length - 1]) ||
+            this.pair_nodes[this.pair_nodes.length - 1]) ||
           (this.pair_nodes[i] == this.pair_nodes[this.pair_nodes.length - 1] &&
             this.pair_nodes[i + 1] ==
-              this.pair_nodes[this.pair_nodes.length - 2])
+            this.pair_nodes[this.pair_nodes.length - 2])
         ) {
           return;
         }
@@ -1017,26 +1017,28 @@ var CLN = new ConcatLineNodes([]);
 
 
 class Algorithm {
-  constructor () {}
+  constructor() { }
 
   get get_keys_id() {
     return Object.keys(localStorage);
   }
 
-  get get_values(){
+  get get_values() {
     return Object.values(localStorage);
   }
 
   preflow_flow() {
     let parse_weight_1, parse_weight_2, tmp;
     for (let i = 0; i < this.get_keys_id.length - 1; i++) {
-      parse_weight_1 = get_values[i].split("-").split(",")[get_values[i].length-1];
+      parse_weight_1 = this.get_values[i].split("-").split(",")[
+        this.get_values[i].length - 1
+      ];
       for (let j = i + 1; j < this.get_keys_id.length; j++) {
-        parse_weight_2 = get_values[j].split("-").split(",")[get_values[j].length-1];
+        parse_weight_2 = this.get_values[j].split("-").split(",")[this.get_values[j].length - 1];
         if (parse_weight_1 > parse_weight_2) {
-          tmp = get_values[i];
-          get_values[i] = get_values[j];
-          get_values[j] = tmp;
+          tmp = this.get_values[i];
+          this.get_values[i] = this.get_values[j];
+          this.get_values[j] = tmp;
         }
       }
     }
