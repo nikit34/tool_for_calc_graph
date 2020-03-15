@@ -392,7 +392,7 @@ class PopUp extends Data {
     node.appendChild(display_popup);
     display_popup.style.top =
       (
-        -parseFloat(node.offsetHeight) -
+        10 -parseFloat(node.offsetHeight) -
         parseFloat(display_popup.offsetHeight) / 2
       ).toString() + "px";
     display_popup.style.left =
@@ -406,7 +406,7 @@ class PopUp extends Data {
     node.appendChild(popup_exit);
     popup_exit.style.top =
       (
-        -parseFloat(node.offsetHeight) -
+        10 -parseFloat(node.offsetHeight) -
         parseFloat(display_popup.offsetHeight) / 2
       ).toString() + "px";
     popup_exit.style.left =

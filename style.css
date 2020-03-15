@@ -6,6 +6,10 @@ body {
   background-size: 100%;
   font-weight: 600;
   font-family: "Courier New", sans-serif;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -o-user-select: none;
 }
 
 .container {
