@@ -1087,6 +1087,7 @@ class Algorithm {
     } else {
       PL.print_log("############# Finished chain nodes #############");
         PL.print_log("Result calculating: " + sum_previews.toString());
+      PL.print_log("################################################");
     }
   }
 
