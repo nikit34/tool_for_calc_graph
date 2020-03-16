@@ -1061,12 +1061,9 @@ class Algorithm {
     }
   }
 
-  step_next_node(next_node_key, passed_nodes, sum_previews) {
+  step_next_node(next_node_key, passed_nodes, count_nodes_graph, sum_previews) {
     let max_weight_row = Number.MIN_VALUE;
     let pred_index_max_weight_row = 1, index_max_weight_row = 1;
-    if (sessionStorage.getItem(next_node_key).length == 2) {
-      console.log(sum_previews);
-    }
     for (let j_pair_key_weight = 1; j_pair_key_weight < sessionStorage.getItem(next_node_key).length; j_pair_key_weight = j_pair_key_weight + 2) {
       if (parseInt(sessionStorage.getItem(next_node_key).split(",")[j_pair_key_weight]) >= sessionStorage.getItem(next_node_key).split(",")[pred_index_max_weight_row] &&
       parseInt(sessionStorage.getItem(next_node_key).split(",")[j_pair_key_weight]) > max_weight_row) {
@@ -1079,19 +1076,31 @@ class Algorithm {
     }
     next_node_key = sessionStorage.getItem(next_node_key).split(",")[index_max_weight_row - 1];
     sum_previews = parseInt(sum_previews) + parseInt(sessionStorage.getItem(next_node_key).split(",")[index_max_weight_row]);
-    if (!passed_nodes.includes(next_node_key) && passed_nodes.length != this.get_keys_id_sessionStorage.length){
+    sessionStorage.setItem(next_node_key, sessionStorage.getItem(next_node_key).split(",").splice(index_max_weight_row - 1, 2));
+    PL.print_log("         " + sum_previews, false);
+    PL.print_log("                       " + passed_nodes);
+    if (!passed_nodes.includes(next_node_key) && passed_nodes.length != count_nodes_graph && next_node_key == null){
       passed_nodes.push(next_node_key);
-      this.step_next_node(next_node_key, passed_nodes, sum_previews);
+      this.step_next_node(next_node_key, passed_nodes, count_nodes_graph, sum_previews);
+    } else if (passed_nodes.includes(next_node_key) && passed_nodes.length != count_nodes_graph) {
+      this.step_next_node(sessionStorage.getItem(next_node_key).split(",")[pred_index_max_weight_row - 1], passed_nodes, count_nodes_graph, sum_previews);
     } else {
-      this.step_next_node(sessionStorage.getItem(next_node_key).split(",")[pred_index_max_weight_row - 1], passed_nodes, sum_previews);
+      PL.print_log("############# Finished chain nodes #############");
+        PL.print_log("Result calculating: " + sum_previews.toString());
     }
   }
 
   preflow_flow() {
+    PL.print_log("Start make dump localStorage...");
     this.pumping_sessionStorage(3, true);
+    PL.print_log("dump localStorage moved in sessionStorage");
+    PL.print_log("Run calculating...");
+    PL.print_log("", 3);
+    PL.print_log("############# Output chain nodes #############");
     let parse_row; //начало с первой ноды
     let max_weight_row = Number.MIN_VALUE, index_max_weight_row = 1, index_max_weight_col; // максимальный вес ребра в строке // индекс максимального ребра/ноды
     let passed_nodes = []; // пройденные ноды
+    let count_nodes_graph = Object.keys(sessionStorage).length;
     let sum_previews = 0; // предварительная сумма
     let pred_index_max_weight_row = 1;
     for (let i_row = 0; i_row < this.get_keys_id_sessionStorage.length; i_row++) {
@@ -1109,14 +1118,40 @@ class Algorithm {
     sum_previews = parseInt(sum_previews) + parseInt(this.get_values_sessionStorage[index_max_weight_col].split(",")[index_max_weight_row]);
     let next_node_key = this.get_values_sessionStorage[index_max_weight_col].split(",")[index_max_weight_row - 1];
     passed_nodes.push(current_node_key);
-    if (!passed_nodes.includes(next_node_key)){
+    sessionStorage.setItem(sessionStorage.key(parseInt(index_max_weight_col)), this.get_values_sessionStorage[index_max_weight_col].split(",").splice(index_max_weight_row - 1, 2));
+
+    PL.print_log("  Sum previews  ", false);
+    PL.print_log("     |         Passed nodes  ");
+    PL.print_log("         " + sum_previews, false);
+    PL.print_log("                        " + passed_nodes);
+
+    if (!passed_nodes.includes(next_node_key)  && passed_nodes.length != count_nodes_graph){
       passed_nodes.push(next_node_key);
-      this.step_next_node(next_node_key, passed_nodes, sum_previews);
+      this.step_next_node(next_node_key, passed_nodes, count_nodes_graph, sum_previews);
+    } else if (passed_nodes.includes(next_node_key) && passed_nodes.length != count_nodes_graph) {
+      this.step_next_node(sessionStorage.getItem(next_node_key)[pred_index_max_weight_row - 1], passed_nodes, count_nodes_graph, sum_previews);
     } else {
-      sessionStorage.setItem(sessionStorage.key(parseInt(index_max_weight_col)), this.get_values_sessionStorage[index_max_weight_col].split(",").splice(index_max_weight_col - 1, 2));
-      this.step_next_node(sessionStorage.getItem(next_node_key)[pred_index_max_weight_row - 1], passed_nodes, sum_previews);
+      console.log(sum_previews);
     }
   }
 }
 
 var A = new Algorithm();
+
+
+class PrintLog {
+  constructor(content) {
+    this.content = content;
+  }
+
+  print_log(extends_content, carry=true) {
+    this.content = this.content + extends_content;
+    if (carry == true || Number.isInteger(parseInt(carry))) {
+      if (carry == true) { carry = 1; }
+      this.content = this.content + "\n".repeat(parseInt(carry));
+    }
+    document.getElementById("textarea").innerHTML = this.content;
+  }
+}
+
+var PL = new PrintLog("");

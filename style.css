@@ -303,8 +303,10 @@ textarea {
   height: 300px;
   transition: 1s;
   background: rgba(150, 150, 150, 0.5);
+  z-index: 3;
 }
 
 textarea:hover {
+  font-size: large;
   background: rgb(220, 220, 220);
 }
