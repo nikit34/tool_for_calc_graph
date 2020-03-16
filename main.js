@@ -1061,14 +1061,61 @@ class Algorithm {
     }
   }
 
+  step_next_node(next_node_key, passed_nodes, sum_previews) {
+    let max_weight_row = Number.MIN_VALUE;
+    let pred_index_max_weight_row = 1, index_max_weight_row = 1;
+    if (sessionStorage.getItem(next_node_key).length == 1) {
+      console.log(sum_previews);
+    }
+    for (let j_pair_key_weight = 1; j_pair_key_weight < sessionStorage.getItem(next_node_key).length; j_pair_key_weight = j_pair_key_weight + 2) {
+      if (parseInt(sessionStorage.getItem(next_node_key).split(",")[j_pair_key_weight]) > sessionStorage.getItem(next_node_key).split(",")[pred_index_max_weight_row] &&
+      parseInt(sessionStorage.getItem(next_node_key).split(",")[j_pair_key_weight]) < parseInt(max_weight_row)) {
+        pred_index_max_weight_row = index_max_weight_row;
+      }
+      if (parseInt(sessionStorage.getItem(next_node_key).split(",")[j_pair_key_weight]) > parseInt(max_weight_row)) {
+        max_weight_row = sessionStorage.getItem(next_node_key).split(",")[j_pair_key_weight];
+        index_max_weight_row = j_pair_key_weight;
+      }
+    }
+    next_node_key = sessionStorage.getItem(next_node_key).split(",")[index_max_weight_row - 1];
+    sum_previews = parseInt(sum_previews) + parseInt(sessionStorage.getItem(next_node_key).split(",")[index_max_weight_row]);
+    if (!passed_nodes.includes(next_node_key)){
+      passed_nodes.push(next_node_key);
+      this.step_next_node(next_node_key, passed_nodes, sum_previews);
+    } else {
+      this.step_next_node(sessionStorage.getItem(next_node_key).split(",")[pred_index_max_weight_row - 1], passed_nodes, sum_previews);
+    }
+  }
+
   preflow_flow() {
     this.pumping_sessionStorage(3, true);
-    let max_weight_one_node, parse_weight_1, parse_weight_2, tmp;
-    for (let i = 0; i < this.get_keys_id_sessionStorage.length; i++) {
-      max_weight_one_node = Number.MIN_VALUE;
-      for (let j = 3; j < this.get_values_sessionStorage[i].length - 1; j = j + 2) {
-
+    let parse_row; //начало с первой ноды
+    let max_weight_row = Number.MIN_VALUE, index_max_weight_row = 1, index_max_weight_col; // максимальный вес ребра в строке // индекс максимального ребра/ноды
+    let passed_nodes = []; // пройденные ноды
+    let sum_previews = 0; // предварительная сумма
+    let pred_index_max_weight_row = 1;
+    for (let i_row = 0; i_row < this.get_keys_id_sessionStorage.length; i_row++) {
+      parse_row = this.get_values_sessionStorage[i_row].split(",");
+      for (let j_pair_key_weight = 1; j_pair_key_weight < parse_row.length; j_pair_key_weight = j_pair_key_weight + 2) {
+        if (parse_row[j_pair_key_weight] > parseInt(max_weight_row)) {
+          pred_index_max_weight_row = index_max_weight_row;
+          max_weight_row = parse_row[j_pair_key_weight];
+          index_max_weight_row = j_pair_key_weight;
+          index_max_weight_col = i_row;
+        }
       }
+
+    }
+    let current_node_key = sessionStorage.key(parseInt(index_max_weight_col));
+    sum_previews = parseInt(sum_previews) + parseInt(this.get_values_sessionStorage[index_max_weight_col].split(",")[index_max_weight_row]);
+    let next_node_key = this.get_values_sessionStorage[index_max_weight_col].split(",")[index_max_weight_row - 1];
+    passed_nodes.push(current_node_key);
+    if (!passed_nodes.includes(next_node_key)){
+      passed_nodes.push(next_node_key);
+      this.step_next_node(next_node_key, passed_nodes, sum_previews);
+    } else {
+      sessionStorage.setItem(sessionStorage.key(parseInt(index_max_weight_col)), this.get_values_sessionStorage[index_max_weight_col].split(",").splice(index_max_weight_col - 1, 2));
+      this.step_next_node(sessionStorage.getItem(next_node_key)[pred_index_max_weight_row - 1], passed_nodes, sum_previews);
     }
   }
 }
