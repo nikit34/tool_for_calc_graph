@@ -55,8 +55,8 @@ class TopSetting extends MainPage {
       if (e.target.id == "buttonStartСalc") {
         document.getElementById("start_dropdown").classList.toggle("show");
       }
-      if (e.target.id == "dinitsa") {
-        console.log(1);
+      if (e.target.id == "strong_connect") {
+        A.strong_connect();
       } else if (e.target.id == "preflow_flow") {
         A.preflow_flow();
       } else if (e.target.id == "line_prog") {
@@ -1132,7 +1132,9 @@ class Algorithm {
     } else if (passed_nodes.includes(next_node_key) && passed_nodes.length != count_nodes_graph) {
       this.step_next_node(sessionStorage.getItem(next_node_key)[pred_index_max_weight_row - 1], passed_nodes, count_nodes_graph, sum_previews);
     } else {
-      console.log(sum_previews);
+      PL.print_log("############# Finished chain nodes #############");
+        PL.print_log("Result calculating: " + sum_previews.toString());
+      PL.print_log("###################MA###o#i######################");
     }
   }
 }
