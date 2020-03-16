@@ -1064,22 +1064,22 @@ class Algorithm {
   step_next_node(next_node_key, passed_nodes, sum_previews) {
     let max_weight_row = Number.MIN_VALUE;
     let pred_index_max_weight_row = 1, index_max_weight_row = 1;
-    if (sessionStorage.getItem(next_node_key).length == 1) {
+    if (sessionStorage.getItem(next_node_key).length == 2) {
       console.log(sum_previews);
     }
     for (let j_pair_key_weight = 1; j_pair_key_weight < sessionStorage.getItem(next_node_key).length; j_pair_key_weight = j_pair_key_weight + 2) {
-      if (parseInt(sessionStorage.getItem(next_node_key).split(",")[j_pair_key_weight]) > sessionStorage.getItem(next_node_key).split(",")[pred_index_max_weight_row] &&
-      parseInt(sessionStorage.getItem(next_node_key).split(",")[j_pair_key_weight]) < parseInt(max_weight_row)) {
+      if (parseInt(sessionStorage.getItem(next_node_key).split(",")[j_pair_key_weight]) >= sessionStorage.getItem(next_node_key).split(",")[pred_index_max_weight_row] &&
+      parseInt(sessionStorage.getItem(next_node_key).split(",")[j_pair_key_weight]) > max_weight_row) {
         pred_index_max_weight_row = index_max_weight_row;
       }
-      if (parseInt(sessionStorage.getItem(next_node_key).split(",")[j_pair_key_weight]) > parseInt(max_weight_row)) {
+      if (parseInt(sessionStorage.getItem(next_node_key).split(",")[j_pair_key_weight]) > max_weight_row) {
         max_weight_row = sessionStorage.getItem(next_node_key).split(",")[j_pair_key_weight];
         index_max_weight_row = j_pair_key_weight;
       }
     }
     next_node_key = sessionStorage.getItem(next_node_key).split(",")[index_max_weight_row - 1];
     sum_previews = parseInt(sum_previews) + parseInt(sessionStorage.getItem(next_node_key).split(",")[index_max_weight_row]);
-    if (!passed_nodes.includes(next_node_key)){
+    if (!passed_nodes.includes(next_node_key) && passed_nodes.length != this.get_keys_id_sessionStorage.length){
       passed_nodes.push(next_node_key);
       this.step_next_node(next_node_key, passed_nodes, sum_previews);
     } else {
@@ -1097,14 +1097,13 @@ class Algorithm {
     for (let i_row = 0; i_row < this.get_keys_id_sessionStorage.length; i_row++) {
       parse_row = this.get_values_sessionStorage[i_row].split(",");
       for (let j_pair_key_weight = 1; j_pair_key_weight < parse_row.length; j_pair_key_weight = j_pair_key_weight + 2) {
-        if (parse_row[j_pair_key_weight] > parseInt(max_weight_row)) {
+        if (parse_row[j_pair_key_weight] > max_weight_row) {
           pred_index_max_weight_row = index_max_weight_row;
           max_weight_row = parse_row[j_pair_key_weight];
           index_max_weight_row = j_pair_key_weight;
           index_max_weight_col = i_row;
         }
       }
-
     }
     let current_node_key = sessionStorage.key(parseInt(index_max_weight_col));
     sum_previews = parseInt(sum_previews) + parseInt(this.get_values_sessionStorage[index_max_weight_col].split(",")[index_max_weight_row]);
