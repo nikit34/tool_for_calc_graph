@@ -56,9 +56,9 @@ class TopSetting extends MainPage {
         document.getElementById("start_dropdown").classList.toggle("show");
       }
       if (e.target.id == "strong_connect") {
-        A.strong_connect();
+        CCSA.depth_first_search();
       } else if (e.target.id == "preflow_flow") {
-        A.preflow_flow();
+        PFA.preflow_flow();
       } else if (e.target.id == "line_prog") {
         console.log(3);
       }
@@ -1016,8 +1016,8 @@ class ConcatLineNodes extends DrawLine {
 var CLN = new ConcatLineNodes([]);
 
 
-class Algorithm {
-  constructor() { }
+class Storages {
+  constructor() {}
 
   get get_keys_id_localStorage() {
     return Object.keys(localStorage);
@@ -1059,6 +1059,13 @@ class Algorithm {
         sessionStorage.setItem(this.get_keys_id_localStorage[i], formed_row);
       }
     }
+  }
+}
+
+
+class PreflowFlowAlgorithm extends Storages {
+  constructor() {
+    super();
   }
 
   step_next_node(next_node_key, passed_nodes, count_nodes_graph, sum_previews) {
@@ -1139,7 +1146,47 @@ class Algorithm {
   }
 }
 
-var A = new Algorithm();
+var PFA = new PreflowFlowAlgorithm();
+
+
+class ConnectComponentSearchAlgorithm extends Storages {
+  constructor(passed_nodes) {
+    super();
+    this.passed_nodes = passed_nodes;
+  }
+
+  marker_deep_passage(node_id) {
+    let view_nodes = SN.select_nodes_save();
+    for (let i = 0; i < view_nodes.length; i++){
+      if (view_nodes[i].dataset.id == node_id) {
+        view_nodes[i].setAttribute("class", "node draggable field mark save comp");
+        break;
+      }
+    }
+    this.passed_nodes.push(node_id);
+  }
+
+  depth_first_search() {
+    this.pumping_sessionStorage(3, true);
+    let start_ids = this.get_values_sessionStorage;
+    let vertex_id_weight = this.get_values_sessionStorage;
+    let row, current_node, k;
+    for (let i = 0; i < start_ids.length; i++) {
+      row = vertex_id_weight[i].split(",");
+      for (let j = 0; j < row.length - 1; j = j + 2) {
+        current_node = row[j];
+        k = 0;
+        while (!this.passed_nodes.includes(current_node) && k < sessionStorage.getItem(current_node).split(",").length){
+          this.marker_deep_passage(current_node);
+          current_node = sessionStorage.getItem(current_node).split(",")[k];
+          k = k + 2;
+        }
+      }
+    }
+  }
+}
+
+var CCSA = new ConnectComponentSearchAlgorithm([]);
 
 
 class PrintLog {
