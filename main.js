@@ -1150,34 +1150,57 @@ var PFA = new PreflowFlowAlgorithm();
 
 
 class ConnectComponentSearchAlgorithm extends Storages {
-  constructor(passed_nodes) {
+  constructor(layers_cluster, passed_nodes) {
     super();
+    this.layers_cluster = layers_cluster;
     this.passed_nodes = passed_nodes;
   }
 
-  marker_deep_passage(node_id) {
+  marker_deep_passage(current_node, num_layer) {
     let view_nodes = SN.select_nodes_save();
-    for (let i = 0; i < view_nodes.length; i++){
-      if (view_nodes[i].dataset.id == node_id) {
+    for (let i = 0; i < view_nodes.length; i++) {
+      if (view_nodes[i].dataset.id == current_node) {
         view_nodes[i].setAttribute("class", "node draggable field mark save comp");
+        view_nodes[i].style.backgroundColor = "rgba(" +
+        (255 * (parseInt(num_layer)) / (parseInt(num_layer) + 1)).toString() + ", " +
+        (255 * (parseInt(num_layer)) / (parseInt(num_layer) + 1)).toString() + ", " +
+        (150 * (parseInt(num_layer)) / (parseInt(num_layer) + 1)).toString() + ", 0.8) !important";
         break;
       }
     }
-    this.passed_nodes.push(node_id);
+    this.passed_nodes.push(current_node);
+  }
+
+  check_available_node_clusters(node) {
+    for (let i = 0; i < this.layers_cluster.length; i++) {
+      if (this.layers_cluster[i].includes(node)) {
+        return i;
+      }
+    }
+    return false;
+  }
+
+  allocation_node_layers(node) {
+    if (this.check_available_node_clusters(node) == false) {
+      this.layers_cluster.push([]);
+      this.layers_cluster[this.layers_cluster.length - 1].push(node);
+    } else {
+      this.layers_cluster[this.check_available_node_clusters(node)].push(node);
+    }
+    this.marker_deep_passage(node, this.check_available_node_clusters(node));
   }
 
   depth_first_search() {
     this.pumping_sessionStorage(3, true);
-    let start_ids = this.get_values_sessionStorage;
-    let vertex_id_weight = this.get_values_sessionStorage;
     let row, current_node, k;
-    for (let i = 0; i < start_ids.length; i++) {
-      row = vertex_id_weight[i].split(",");
+    for (let i = 0; i < this.get_values_sessionStorage.length; i++) {
+      row = this.get_values_sessionStorage[i].split(",");
+      this.allocation_node_layers(sessionStorage.key(i));
       for (let j = 0; j < row.length - 1; j = j + 2) {
         current_node = row[j];
         k = 0;
-        while (!this.passed_nodes.includes(current_node) && k < sessionStorage.getItem(current_node).split(",").length){
-          this.marker_deep_passage(current_node);
+        while (!this.passed_nodes.includes(current_node) && k < sessionStorage.getItem(current_node).split(",").length) {
+          this.allocation_node_layers(current_node);
           current_node = sessionStorage.getItem(current_node).split(",")[k];
           k = k + 2;
         }
@@ -1186,7 +1209,7 @@ class ConnectComponentSearchAlgorithm extends Storages {
   }
 }
 
-var CCSA = new ConnectComponentSearchAlgorithm([]);
+var CCSA = new ConnectComponentSearchAlgorithm([], []);
 
 
 class PrintLog {
