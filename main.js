@@ -1161,7 +1161,7 @@ class ConnectComponentSearchAlgorithm extends Storages {
     for (let i = 0; i < view_nodes.length; i++) {
       if (view_nodes[i].dataset.id == current_node) {
         view_nodes[i].setAttribute("class", "node draggable field mark save comp");
-        view_nodes[i].style.backgroundColor = "rgba(" +
+        view_nodes[i].style.border = "5px solid rgba(" +
         (255 * (parseInt(num_layer)) / (parseInt(num_layer) + 1)).toString() + ", " +
         (255 * (parseInt(num_layer)) / (parseInt(num_layer) + 1)).toString() + ", " +
         (150 * (parseInt(num_layer)) / (parseInt(num_layer) + 1)).toString() + ", 0.8) !important";
@@ -1199,8 +1199,8 @@ class ConnectComponentSearchAlgorithm extends Storages {
       for (let j = 0; j < row.length - 1; j = j + 2) {
         current_node = row[j];
         k = 0;
+        this.allocation_node_layers(current_node);
         while (!this.passed_nodes.includes(current_node) && k < sessionStorage.getItem(current_node).split(",").length) {
-          this.allocation_node_layers(current_node);
           current_node = sessionStorage.getItem(current_node).split(",")[k];
           k = k + 2;
         }
@@ -1209,7 +1209,7 @@ class ConnectComponentSearchAlgorithm extends Storages {
   }
 }
 
-var CCSA = new ConnectComponentSearchAlgorithm([], []);
+var CCSA = new ConnectComponentSearchAlgorithm([[]], []);
 
 
 class PrintLog {
