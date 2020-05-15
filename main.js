@@ -1,5 +1,15 @@
 "use strict;";
 
+(function() {
+  if(screen.width > 1800 && screen.height > 1000){
+    document.body.style.zoom = "120%";
+  } else if(screen.width < 1300 && screen.height < 700){
+    document.body.style.zoom = "80%";
+  } else {
+    document.body.style.zoom = "100%";
+  }
+})()
+
 class MainPage {
   constructor() { }
 
